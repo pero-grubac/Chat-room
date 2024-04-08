@@ -17,11 +17,13 @@ const LoginSingUp = () => {
     setAction(" active");
     setIsToken(false);
   };
+
   const backToLogin = () => {
     setAction("");
     setIsToken(false);
   };
-  const login = async (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(`http://localhost:8443/auth/login`, {
@@ -40,7 +42,11 @@ const LoginSingUp = () => {
       console.error("Error logging in:", error);
     }
   };
-  const register = () => {};
+
+  const handleRegister = () => {
+    setAction("");
+  };
+
   const handleToken = async (e) => {
     e.preventDefault();
     try {
@@ -53,15 +59,18 @@ const LoginSingUp = () => {
       if (response.status === 200) {
         console.log(response.data);
       } else {
+        setIsToken(false);
         alert("Invalid credentials");
       }
     } catch (error) {
       console.error("Error logging in:", error);
     }
   };
+
   const returnToLogin = () => {
     setIsToken(false);
   };
+  
   return (
     <div className={`wrapper${action}`}>
       {!isToken && (
@@ -88,7 +97,7 @@ const LoginSingUp = () => {
               />
               <label>Password</label>
             </div>
-            <button type="submit" onClick={login}>
+            <button type="submit" onClick={handleLogin}>
               Login
             </button>
 
@@ -154,7 +163,7 @@ const LoginSingUp = () => {
             <FontAwesomeIcon icon={faLock} className="icon" />
             <input type="password" placeholder="Password" required />
           </div>
-          <button type="submit" onClick={register}>
+          <button type="submit" onClick={handleRegister}>
             Register
           </button>
 
