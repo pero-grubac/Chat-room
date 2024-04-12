@@ -79,7 +79,7 @@ form .input-box {
   font-size: 18px;
   color: #fff;
   pointer-events: none;
-  transition: .3s ease;
+  transition: 0.3s ease;
 }
 
 .input-box input:focus ~ label,
@@ -102,6 +102,7 @@ form button {
   font-size: 16px;
   color: #333;
   font-weight: 700;
+  
 }
 
 form .register-link {

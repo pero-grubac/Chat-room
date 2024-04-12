@@ -7,6 +7,8 @@ import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { loginUser, verifyToken } from "../../Services/login.service";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 const Login = () => {
   const [isToken, setIsToken] = useState(false);
@@ -22,16 +24,29 @@ const Login = () => {
     setToken("");
   };
 
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const userInfo = await axios
+        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        })
+        .then((res) => res.data);
+
+      console.log(userInfo);
+    },
+  });
+
   const registerLink = () => {
     navigate("/register");
     setIsToken(false);
     clearFields();
   };
 
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginUser(username, password,navigate);
+      const response = await loginUser(username, password, navigate);
       if (response.data.success) {
         showMessage(
           "success",
@@ -59,11 +74,11 @@ const Login = () => {
   const handleToken = async (e) => {
     e.preventDefault();
     try {
-      const response = await verifyToken(username, password, token,navigate);
+      const response = await verifyToken(username, password, token, navigate);
       if (response.status === 200) {
         showMessage("success", "Wellcome.");
         console.log(response.data);
-      }  else {
+      } else {
         setIsToken(false);
         showMessage("error", "Invalid token");
       }
@@ -106,7 +121,13 @@ const Login = () => {
             <button type="submit" onClick={handleLogin}>
               Login
             </button>
-
+            <br />
+            <br />
+            <div>
+              <button onClick={() => googleLogin()}>
+                Sign in with Google 🚀
+              </button>
+            </div>
             <div className="register-link">
               <p>
                 Don't have an account?{" "}

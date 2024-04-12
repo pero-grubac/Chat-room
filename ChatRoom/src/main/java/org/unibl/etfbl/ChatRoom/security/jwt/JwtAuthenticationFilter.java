@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         for (String paramName : request.getParameterMap().keySet()) {
             String paramValue = request.getParameter(paramName);
-            System.out.println("attributeName " + paramName);
+          //  System.out.println("attributeName " + paramName);
         }
         filterChain.doFilter(request, response);
     }

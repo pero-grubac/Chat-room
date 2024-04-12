@@ -45,7 +45,7 @@ public class WAF implements ConstraintValidator<BannedWordsConstraint, String> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "";
 
-        System.out.println(s + " " + containsBannedWord(s) + " " + checkingLength(paramName, s));
+       //  System.out.println(s + " " + containsBannedWord(s) + " " + checkingLength(paramName, s));
 
         if (!containsBannedWord(s) && checkingLength(paramName, s)) {
             if (username != null && !username.isEmpty() && !containsBannedWord(username))
