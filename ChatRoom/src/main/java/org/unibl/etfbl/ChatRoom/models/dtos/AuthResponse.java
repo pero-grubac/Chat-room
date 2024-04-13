@@ -11,7 +11,6 @@ import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
-    private boolean isAuthenticated;
     @BannedWordsConstraint(paramName = "token")
     private String token;
 }

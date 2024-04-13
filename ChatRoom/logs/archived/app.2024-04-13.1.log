@@ -1,0 +1,42 @@
+2024-04-13 10:18:54,075 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 10816 (D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom)
+2024-04-13 10:18:54,079 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-13 10:18:54,080 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-13 10:18:57,106 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-13 10:18:58,115 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 4.247 seconds (process running for 4.763)
+2024-04-13 10:19:04,508 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.login() 
+2024-04-13 10:19:04,579 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:04,743 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:04,746 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 
+2024-04-13 10:19:04,764 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.services.implementations.EmailServiceImpl.sendEmail() 
+2024-04-13 10:19:13,037 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-3] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.verifyTwoFactorToken() 
+2024-04-13 10:19:13,038 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-3] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:13,107 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-3] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:13,129 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-3] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 
+2024-04-13 10:19:37,986 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 18772 (D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom)
+2024-04-13 10:19:37,987 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-13 10:19:37,987 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-13 10:19:40,650 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-13 10:19:41,633 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 3.85 seconds (process running for 4.377)
+2024-04-13 10:19:43,458 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.login() 
+2024-04-13 10:19:43,543 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:43,701 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:43,701 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 
+2024-04-13 10:19:43,716 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.services.implementations.EmailServiceImpl.sendEmail() 
+2024-04-13 10:19:50,798 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.verifyTwoFactorToken() 
+2024-04-13 10:19:50,799 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:50,868 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:19:50,889 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 
+2024-04-13 10:21:04,283 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 10812 (D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\Sigurnost-na-internetu\ChatRoom)
+2024-04-13 10:21:04,284 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-13 10:21:04,284 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-13 10:21:06,956 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-13 10:21:07,922 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 3.894 seconds (process running for 4.435)
+2024-04-13 10:21:13,366 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.login() 
+2024-04-13 10:21:13,429 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:21:13,601 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:21:13,601 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 
+2024-04-13 10:21:13,616 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-1] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.services.implementations.EmailServiceImpl.sendEmail() 
+2024-04-13 10:21:24,704 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.verifyTwoFactorToken() 
+2024-04-13 10:21:24,705 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:21:24,774 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.getUserEntityByUsername() 
+2024-04-13 10:21:24,795 INFO o.u.e.C.a.ActionLoggingAdvice [http-nio-8443-exec-2] Method invoked anonymousUser: class jdk.proxy2.$Proxy130.saveAndFlush() 

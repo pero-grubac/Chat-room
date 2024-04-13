@@ -1,0 +1,25 @@
+2024-04-02 15:47:18,615 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 18852 (D:\Downloads\Sigurnost na internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\ChatRoom)
+2024-04-02 15:47:18,622 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-02 15:47:18,623 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-02 15:47:23,713 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-02 15:47:25,436 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 7.266 seconds (process running for 8.287)
+2024-04-02 15:50:07,545 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 360 (D:\Downloads\Sigurnost na internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\ChatRoom)
+2024-04-02 15:50:07,546 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-02 15:50:07,547 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-02 15:50:12,198 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-02 15:50:13,674 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 6.524 seconds (process running for 7.477)
+2024-04-02 16:12:10,596 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 1660 (D:\Downloads\Sigurnost na internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\ChatRoom)
+2024-04-02 16:12:10,596 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-02 16:12:10,596 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-02 16:12:14,983 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-02 16:12:16,477 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 6.248 seconds (process running for 7.161)
+2024-04-02 16:12:49,248 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 4016 (D:\Downloads\Sigurnost na internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\ChatRoom)
+2024-04-02 16:12:49,249 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-02 16:12:49,250 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-02 16:12:53,948 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-02 16:12:55,522 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 6.677 seconds (process running for 7.693)
+2024-04-02 16:14:27,888 INFO o.u.e.C.ChatRoomApplication [main] Starting ChatRoomApplication using Java 21 with PID 1888 (D:\Downloads\Sigurnost na internetu\ChatRoom\target\classes started by Pero in D:\Downloads\Sigurnost na internetu\ChatRoom)
+2024-04-02 16:14:27,888 DEBUG o.u.e.C.ChatRoomApplication [main] Running with Spring Boot v3.2.1, Spring v6.1.2
+2024-04-02 16:14:27,889 INFO o.u.e.C.ChatRoomApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-04-02 16:14:32,644 DEBUG o.u.e.C.s.j.JwtAuthenticationFilter [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-04-02 16:14:34,104 INFO o.u.e.C.ChatRoomApplication [main] Started ChatRoomApplication in 6.649 seconds (process running for 7.609)

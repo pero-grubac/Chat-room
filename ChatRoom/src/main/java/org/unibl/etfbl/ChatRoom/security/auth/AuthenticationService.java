@@ -54,7 +54,7 @@ public class AuthenticationService {
             user.setJWT(jwt);
             user.setTwoFactorToken(null);
             repository.saveAndFlush(user);
-            return AuthResponse.builder().token(jwt).isAuthenticated(true).build();
+            return AuthResponse.builder().token(jwt).build();
         } else {
             throw new ConflictException("User with username " + user.getUsername() + " doesn't have two factor token.");
         }

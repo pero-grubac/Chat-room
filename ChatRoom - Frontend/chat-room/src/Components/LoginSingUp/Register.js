@@ -20,12 +20,11 @@ const Register = () => {
       content: content,
     });
   };
-
+// login uradi
   const handleRegister = () => {
     const strongPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])(?=.{8,})/;
     const isValidPassword = strongPasswordRegex.test(password);
-    console.log(isValidPassword);
     if (isValidPassword) {
       showMessage("success", "You have successfully registered");
     } else {

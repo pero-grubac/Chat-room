@@ -9,6 +9,9 @@ import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { handleLoginError, handleTokenError } from "../Error/ErrorMessage";
+import { authState } from "../Redux/slices/userSlice"; 
 
 const Login = () => {
   const [isToken, setIsToken] = useState(false);
@@ -17,6 +20,7 @@ const Login = () => {
   const [token, setToken] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const clearFields = () => {
     setPassword("");
@@ -42,25 +46,19 @@ const Login = () => {
     clearFields();
   };
 
-  
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginUser(username, password, navigate);
-      if (response.data.success) {
+      const response = await loginUser(username, password);
+      if (response.status === 200) {
         showMessage(
           "success",
           "You have successfully loged in. Procede with token."
         );
         setIsToken(true);
       }
-      if (response.status === 200) {
-        setIsToken(true);
-      } else {
-        showMessage("error", "Invalid credentials");
-      }
     } catch (error) {
-      console.error("Error logging in:", error);
+      handleLoginError();
     }
   };
 
@@ -74,16 +72,18 @@ const Login = () => {
   const handleToken = async (e) => {
     e.preventDefault();
     try {
-      const response = await verifyToken(username, password, token, navigate);
+      const response = await verifyToken(username, password, token);
       if (response.status === 200) {
         showMessage("success", "Wellcome.");
-        console.log(response.data);
+        dispatch(authState());
+        navigate("/forum_rooms");
       } else {
         setIsToken(false);
-        showMessage("error", "Invalid token");
       }
     } catch (error) {
-      console.error("Error logging in:", error);
+      console.log(error);
+      setIsToken(false);
+      handleTokenError();
     }
   };
 
