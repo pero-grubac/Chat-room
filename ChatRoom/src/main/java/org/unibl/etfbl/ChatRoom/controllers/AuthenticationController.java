@@ -22,7 +22,7 @@ public class AuthenticationController {
     @Autowired
     private ExceptionLoggingAdvice exceptionLoggingAdvice;
 
-
+// TODO logout
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors())

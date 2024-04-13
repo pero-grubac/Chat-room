@@ -39,7 +39,6 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
-
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         if (userDetails instanceof UserEntity user) {
             extraClaims.put("role", user.getRole().toString());

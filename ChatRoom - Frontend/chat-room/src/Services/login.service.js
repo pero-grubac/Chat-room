@@ -24,6 +24,19 @@ export const verifyToken = async (username, password, token, navigate) => {
   }
 };
 
+export const register = async (username, password, email, navigate) => {
+  try {
+    const response = await instance.post("/add", {
+      username,
+      password,
+      email,
+    });
+    return response;
+  } catch (error) {
+    handleErrorResponse(error, navigate);
+  }
+};
+
 const handleErrorResponse = (error, navigate) => {
   if (error.response.status === 403) {
     navigate("/error403");
@@ -42,4 +55,5 @@ const handleErrorResponse = (error, navigate) => {
 export default {
   loginUser,
   verifyToken,
+  register,
 };

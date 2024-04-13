@@ -69,6 +69,7 @@ public class UserController {
     }
 
     // trazi po usernamu
+    // napravi i za permissions
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','KORISNIK')")
     public ResponseEntity<?> update(@AuthenticationPrincipal(expression = "username") String username, @RequestBody @Valid UserInput user, BindingResult bindingResult) {
