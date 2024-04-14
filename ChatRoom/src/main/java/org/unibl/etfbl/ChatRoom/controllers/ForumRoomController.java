@@ -34,7 +34,7 @@ public class ForumRoomController {
     }
 
 
-    @PostMapping
+    @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     public ResponseEntity<?> addForumRoom(@RequestBody @Valid ForumRoom forumRoom, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
@@ -46,7 +46,7 @@ public class ForumRoomController {
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
-    @PutMapping
+    @PutMapping("/update")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     public ResponseEntity<?> update(@RequestBody @Valid ForumRoom forumRoom, BindingResult bindingResult) {
         if (bindingResult.hasErrors())

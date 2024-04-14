@@ -1,10 +1,13 @@
 package org.unibl.etfbl.ChatRoom.controllers;
 
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.unibl.etfbl.ChatRoom.advices.ExceptionLoggingAdvice;
@@ -12,6 +15,7 @@ import org.unibl.etfbl.ChatRoom.models.dtos.ApproveComment;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentInput;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentOutput;
 import org.unibl.etfbl.ChatRoom.services.CommentService;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,6 +27,8 @@ public class CommentController {
     private CommentService commentService;
     @Autowired
     private ExceptionLoggingAdvice exceptionLoggingAdvice;
+    @Autowired
+    private ModelMapper modelMapper;
 
     // TODO posljednjih 20 a ne sve
     @GetMapping("/{id}")
@@ -34,17 +40,17 @@ public class CommentController {
 
     @GetMapping("/requests/{idForumRoom}")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
-    public List<CommentOutput> getAllRequests(@PathVariable Integer idForumRoom) {
-        return commentService.getCommentsInForumRoom(idForumRoom, null);
+    public List<CommentOutput> getAllRequests(@PathVariable Integer idForumRoom, Pageable pageable) {
+        return commentService.getRequestedComments(idForumRoom, null);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR','KORISNIK') ")
-    public ResponseEntity<?> create(@RequestBody @Valid CommentInput comment, BindingResult bindingResult) {
+    public ResponseEntity<?> create(@AuthenticationPrincipal(expression = "username") String username, @RequestBody @Valid CommentInput comment, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed");
         try {
-            commentService.createComment(comment);
+            commentService.createComment(username, comment);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             exceptionLoggingAdvice.afterThrowing(e);
@@ -54,11 +60,11 @@ public class CommentController {
 
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR') and hasAuthority('UPDATE')")
-    public ResponseEntity<?> update(@RequestBody @Valid CommentInput comment, BindingResult bindingResult) {
+    public ResponseEntity<?> update(@AuthenticationPrincipal(expression = "username") String username, @RequestBody @Valid CommentInput comment, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed");
         try {
-            commentService.updateComment(comment);
+            commentService.updateComment(username, comment);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             exceptionLoggingAdvice.afterThrowing(e);
@@ -72,7 +78,7 @@ public class CommentController {
         if (bindingResult.hasErrors())
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed");
         try {
-            commentService.allowComment(comment.getId(), comment.isApproved());
+            commentService.allowComment(comment.getId(), comment.getIsApproved());
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             exceptionLoggingAdvice.afterThrowing(e);
@@ -80,7 +86,7 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','MODERATOR') and hasAuthority('DELETE')")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {

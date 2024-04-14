@@ -11,7 +11,5 @@ public class CommentInput {
     private Integer idComment;
     @BannedWordsConstraint(paramName = "text")
     private String text;
-    private Timestamp createdAt;
     private Integer idForumRoom;
-    private Integer idUser;
 }

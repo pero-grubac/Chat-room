@@ -1,16 +1,21 @@
 import React, { useEffect } from "react";
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../Redux/slices/userSlice";
 
 const Error = ({ status, title, subTitle }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     localStorage.clear();
   }, []);
   const redirect = () => {
-    localStorage.clear();
-    navigate("/login");
+    dispatch(logout());
+
+  //  localStorage.clear();
+   navigate("/login");
   };
 
   return (

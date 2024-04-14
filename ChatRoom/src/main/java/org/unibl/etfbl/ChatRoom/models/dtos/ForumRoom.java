@@ -5,7 +5,7 @@ import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
 
 @Data
 public class ForumRoom {
-    private Integer idForumRoom;
+    private Integer id;
     @BannedWordsConstraint(paramName = "name")
     private String name;
 }

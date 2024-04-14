@@ -6,20 +6,42 @@ import {
   SettingOutlined,
   LogoutOutlined,
   PlusOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { Card, Button } from "antd";
-import { getForumRooms } from "../../Services/forumRooms.Service";
+import {
+  deleteForumRoom,
+  getForumRooms,
+} from "../../Services/forumRooms.Service";
 import { useNavigate } from "react-router-dom";
-import { handleGetForumRooms } from "../Error/ErrorMessage";
+import {
+  hadnleDeleteForumRoom,
+  handleGetForumRooms,
+} from "../Error/ErrorMessage";
 import { useDispatch } from "react-redux";
 import { logout } from "../Redux/slices/userSlice";
 import "./ForumRoom.css";
-import { ROLE_ADMIN, ROLE_USER, ROLE_MODERATOR } from "../Util/RolePermission";
+import { ROLE_ADMIN,  ROLE_MODERATOR } from "../Util/RolePermission";
+import UpdateForumRoom from "./UpdateForumRoom";
+import NewForumRoom from "./NewForumRoom";
+import { Modal } from "antd";
+import Comments from "../Comments/Comments";
+import RequestedComments from "../Comments/RequestedComments";
+
+const { confirm } = Modal;
 const ForumRoom = () => {
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [userRole, setUserRole] = useState("");
+  const [permissions, setPermissions] = useState([]);
+  const [showUpdateRoomForm, setShowUpdateRoomForm] = useState(false);
+  const [roomName, setRoomName] = useState("");
+  const [id, setid] = useState("");
+  const [roomUpdated, setRoomUpdated] = useState(false);
+  const [showNewRoomForm, setshowNewRoomForm] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [showRequestedComments, setShowRequestedComments] = useState(false);
 
   useEffect(() => {
     const fetchForumRooms = async () => {
@@ -27,51 +49,111 @@ const ForumRoom = () => {
         const response = await getForumRooms();
         setRooms(response.data);
       } catch (error) {
+        console.log(error);
         handleGetForumRooms(error);
-        navigate("/login");
+        dispatch(logout());
+        // navigate("/login");
       }
     };
 
     fetchForumRooms();
-    const role = sessionStorage.getItem("role");
-    setUserRole(role);
-  }, [navigate]);
+    if (sessionStorage.getItem("role") !== "") {
+      const role = sessionStorage.getItem("role");
+      setUserRole(role);
+    }
+
+    if (sessionStorage.getItem("permissions") !== "") {
+      const p = sessionStorage.getItem("permissions");
+      setPermissions(p);
+    }
+  }, [dispatch, navigate, roomUpdated]);
 
   const handleLogout = async () => {
     try {
       dispatch(logout());
-      navigate("/login");
+      //   navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  const handleSettingAction = () => {
-    // Logic for setting action
-    console.log("Setting action clicked");
+  const handleUpdate = (name, id) => {
+    setRoomName(name);
+    setid(id);
+    setShowUpdateRoomForm(true);
   };
 
-  const handleFormAction = () => {
-    // Logic for form action
-    console.log("Form action clicked");
+  const handleAllowAction = (id) => {
+    setid(id);
+    setShowRequestedComments(true);
   };
 
-  const handleNewRoomAction = () => {
-    // Logic for new room action
-    console.log("New room action clicked");
+  const handleNewRoomAction = (id) => {
+    setRoomName();
+    setshowNewRoomForm(true);
   };
 
-  const handleMailAction = () => {
-    console.log("Mail action clicked");
+  const handleMailAction = (id) => {
+    setid(id);
+    setShowComments(true);
   };
+
+  const handleDelete = async (id) => {
+    confirm({
+      title: "Are you sure you want to delete this room?",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await deleteForumRoom(id);
+          setRooms(rooms.filter((room) => room.id !== id));
+        } catch (error) {
+          console.log(error);
+          hadnleDeleteForumRoom(error);
+          dispatch(logout());
+          //   navigate("/login");
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  const handleCloseForm = () => {
+    setShowUpdateRoomForm(false);
+    setshowNewRoomForm(false);
+    setRoomUpdated(!roomUpdated);
+    setShowComments(false);
+    setShowRequestedComments(false);
+  };
+
+  const handleUsers = () => {};
   return (
     <div>
+      {userRole === ROLE_ADMIN && showUpdateRoomForm && (
+        <UpdateForumRoom
+          onClose={handleCloseForm}
+          roomName={roomName}
+          id={id}
+        />
+      )}
+      {(userRole === ROLE_ADMIN || userRole === ROLE_MODERATOR) && showRequestedComments && (
+        <RequestedComments
+          permissions={permissions}
+          onClose={handleCloseForm}
+          idRoom={id}
+        />
+      )}
+      {userRole === ROLE_ADMIN && showNewRoomForm && (
+        <NewForumRoom onClose={handleCloseForm} roomName={roomName} />
+      )}
+      {showComments && <Comments onClose={handleCloseForm} idroom={id} />}
       {userRole === ROLE_ADMIN && (
         <Button
           className="forum-button forum-button-top"
           size="large"
           type="primary"
           shape="circle"
+          onClick={handleUsers}
         >
           <UserOutlined style={{ fontSize: "24px" }} />
         </Button>
@@ -103,10 +185,27 @@ const ForumRoom = () => {
               backdropFilter: "blur(7px)",
             }}
             actions={[
-              userRole === ROLE_ADMIN && <SettingOutlined key="setting" onClick={handleSettingAction} />,
-              <MailOutlined key="mail" onClick={handleMailAction} />,
+              userRole === ROLE_ADMIN && (
+                <SettingOutlined
+                  key={`setting-${room.id}`}
+                  onClick={() => handleUpdate(room.name, room.id)}
+                />
+              ),
+              userRole === ROLE_ADMIN && (
+                <DeleteOutlined
+                  ey={`delete-${room.id}`}
+                  onClick={() => handleDelete(room.id)}
+                />
+              ),
+              <MailOutlined
+                key={`mail-${room.id}`}
+                onClick={() => handleMailAction(room.id)}
+              />,
               userRole === ROLE_ADMIN || userRole === ROLE_MODERATOR ? (
-                <FormOutlined key="form" onClick={handleFormAction}/>
+                <FormOutlined
+                  key={`form-${room.id}`}
+                  onClick={() => handleAllowAction(room.id)}
+                />
               ) : null,
             ]}
           >
@@ -123,7 +222,7 @@ const ForumRoom = () => {
               background: "transparent",
               backdropFilter: "blur(7px)",
             }}
-            actions={[<PlusOutlined key="add" onClick={handleNewRoomAction}/>]}
+            actions={[<PlusOutlined key="add" onClick={handleNewRoomAction} />]}
           >
             <Card.Meta
               title={<div style={{ textAlign: "center" }}>New room</div>}

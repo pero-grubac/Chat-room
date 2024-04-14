@@ -26,8 +26,10 @@ public class WAF implements ConstraintValidator<BannedWordsConstraint, String> {
 
     public boolean checkingLength(String paramName, String input) {
         for (ParameterLengthEnum param : ParameterLengthEnum.values())
-            if (paramName.toLowerCase().equals(param.getParamName()))
+            if (paramName.equalsIgnoreCase(param.getParamName())) {
+              //  System.out.println(input.length() + " " + param.getParamLength());
                 return input.length() < param.getParamLength();
+            }
 
         return false;
     }
@@ -45,9 +47,9 @@ public class WAF implements ConstraintValidator<BannedWordsConstraint, String> {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "";
 
-       //  System.out.println(s + " " + containsBannedWord(s) + " " + checkingLength(paramName, s));
+      //  System.out.println(s + " " + paramName + " " + containsBannedWord(s) + " " + checkingLength(paramName, s));
 
-        if (!containsBannedWord(s) && checkingLength(paramName, s)) {
+        if (containsBannedWord(s) || !checkingLength(paramName, s)) {
             if (username != null && !username.isEmpty() && !containsBannedWord(username))
                 userService.deleteJWT(username);
             return false;

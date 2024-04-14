@@ -7,13 +7,15 @@ import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
 @Data
 public class ApproveComment {
     private Integer id;
-    private boolean isApproved;
-    @JsonProperty("isApproved")
-    public void setApproved(boolean approved) {
-        isApproved = approved;
+    private Byte isApproved;
+
+  /*  @JsonProperty("isApproved")
+    public void setApproved(String isApproved) {
+        this.isApproved = isApproved.equals("true");
     }
+
     @JsonProperty("isApproved")
     public boolean isApproved() {
         return isApproved;
-    }
+    }*/
 }

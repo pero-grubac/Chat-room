@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.ForumRoom;
+import org.unibl.etfbl.ChatRoom.models.entities.CommentEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.ForumRoomEntity;
+import org.unibl.etfbl.ChatRoom.repositories.CommentEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.ForumRoomEntityRepository;
+import org.unibl.etfbl.ChatRoom.services.CommentService;
 import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 
 import java.util.Comparator;
@@ -22,6 +25,8 @@ public class ForumRoomServiceImpl implements ForumRoomService {
 
     @Autowired
     private ForumRoomEntityRepository repository;
+    @Autowired
+    private CommentEntityRepository commentEntityRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -33,7 +38,7 @@ public class ForumRoomServiceImpl implements ForumRoomService {
         List<ForumRoom> forumRooms = new java.util.ArrayList<>(repository.findAll().stream()
                 .map(f -> modelMapper.map(f, ForumRoom.class))
                 .toList());
-        forumRooms.sort(Comparator.comparing(ForumRoom::getIdForumRoom));
+        forumRooms.sort(Comparator.comparing(ForumRoom::getId));
         return forumRooms;
     }
 
@@ -61,8 +66,8 @@ public class ForumRoomServiceImpl implements ForumRoomService {
         if (repository.existsByName(forumRoom.getName())) {
             throw new ConflictException("Forum room with name: " + forumRoom.getName() + " already exists.");
         } else {
-            ForumRoomEntity forumRoomEntity = repository.findById(forumRoom.getIdForumRoom()).orElseThrow(
-                    () -> new NotFoundException("Forum room with ID " + forumRoom.getIdForumRoom() + " not found")
+            ForumRoomEntity forumRoomEntity = repository.findById(forumRoom.getId()).orElseThrow(
+                    () -> new NotFoundException("Forum room with ID " + forumRoom.getId() + " not found")
             );
             forumRoomEntity.setName(forumRoom.getName());
             repository.saveAndFlush(forumRoomEntity);
@@ -75,6 +80,9 @@ public class ForumRoomServiceImpl implements ForumRoomService {
         if (!repository.existsByIdForumRoom(idForumRoom)) {
             throw new NotFoundException("Forum room with id: " + idForumRoom + " doesn't exists.");
         } else {
+            List<CommentEntity> comments = commentEntityRepository.findAllByForumRoom_IdForumRoom(idForumRoom);
+            for(CommentEntity c : comments)
+                commentEntityRepository.deleteById(c.getIdComment());
             repository.deleteById(idForumRoom);
         }
     }
