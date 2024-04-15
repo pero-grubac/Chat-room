@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `comment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comment` (
   `IdComment` int NOT NULL AUTO_INCREMENT,
-  `Text` varchar(45) NOT NULL,
+  `Text` varchar(100) NOT NULL,
   `CreatedAt` datetime NOT NULL,
   `IdForumRoom` int NOT NULL,
   `IdUser` int NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE `comment` (
   KEY `fk_comment_has_room_idx` (`IdForumRoom`),
   CONSTRAINT `fk_comment_has_room` FOREIGN KEY (`IdForumRoom`) REFERENCES `forumroom` (`IdForumRoom`),
   CONSTRAINT `fk_comment_has_user` FOREIGN KEY (`IdUser`) REFERENCES `user` (`IdUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (2,'nauka','2024-03-22 12:30:00',1,1,1),(3,'nauka 2','2024-03-22 12:30:00',1,3,1),(4,'nauka 3','2024-03-22 12:30:00',1,3,0),(5,'nauka 4 izmjena 2','2024-03-24 21:54:30',1,3,1),(6,'nauka 5','2024-03-22 12:30:00',1,3,NULL),(9,'nauka 5ab','2024-03-24 21:53:50',1,3,NULL);
+INSERT INTO `comment` VALUES (2,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod, velit ut cursus scelerisq','2024-03-22 12:30:00',1,1,1),(3,'nauka 2','2024-03-22 12:30:00',1,3,1),(4,'nauka 3','2024-03-22 12:30:00',1,3,0),(5,'nauka 4 izmjena 2','2024-03-24 21:54:30',1,3,1),(6,'nauka 5','2024-03-22 12:30:00',1,3,NULL),(10,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod, velit ut cursus scelerisq','2024-04-14 16:15:32',1,3,1),(12,'ispravljen test','2024-04-14 21:23:33',1,1,NULL),(14,'sta ce se sada desiti','2024-04-14 17:13:38',1,1,NULL),(15,'hoces li sada raditi ','2024-04-14 18:36:38',1,1,NULL),(18,'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod, velit ut cursus scelerisq','2024-04-14 20:12:33',1,1,NULL);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `forumroom` (
   `Name` varchar(45) NOT NULL,
   PRIMARY KEY (`IdForumRoom`),
   UNIQUE KEY `Name_UNIQUE` (`Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,6 +70,31 @@ LOCK TABLES `forumroom` WRITE;
 /*!40000 ALTER TABLE `forumroom` DISABLE KEYS */;
 INSERT INTO `forumroom` VALUES (8,'IT'),(2,'Kultura'),(3,'Muzika'),(1,'Nauka'),(4,'Umjetnost');
 /*!40000 ALTER TABLE `forumroom` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logger`
+--
+
+DROP TABLE IF EXISTS `logger`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `logger` (
+  `IdLogger` int NOT NULL AUTO_INCREMENT,
+  `Type` varchar(45) NOT NULL,
+  `Message` varchar(255) NOT NULL,
+  PRIMARY KEY (`IdLogger`)
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logger`
+--
+
+LOCK TABLES `logger` WRITE;
+/*!40000 ALTER TABLE `logger` DISABLE KEYS */;
+INSERT INTO `logger` VALUES (274,'ACTION','Method invoked anonymousUser: class org.unibl.etfbl.ChatRoom.controllers.AuthenticationController.login()'),(275,'EXCEPTION','Exception occurred for user admin: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"java.util.Map.get(Object)\" is null'),(276,'EXCEPTION','Exception occurred for user admin: Cannot invoke \"java.lang.Integer.intValue()\" because the return value of \"java.util.Map.get(Object)\" is null'),(278,'EXCEPTION','Exception occurred for user admin: Comment with ID 11 not found'),(280,'EXCEPTION','Exception occurred for user admin: Invalid data');
+/*!40000 ALTER TABLE `logger` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -128,7 +153,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,NULL,'admin','admin@gmail.com','$2a$10$SHBpBtj88odoDNTy3SISieMP12WJwErrsCcM5dpZCbNxF777BxSIu','ROLE_ADMIN',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsInBlcm1pc3Npb25zIjpbIkFERCIsIkRFTEVURSIsIlVQREFURSJdLCJzdWIiOiJhZG1pbiIsImlhdCI6MTcxMjU2MTQzNCwiZXhwIjoxNzEyNTYyODc0fQ.b3CrQRvqGsnNRnIXHt9boUf8mqAE77P_ghrqcBtW93Q'),(3,1,NULL,'aaa','admin@gmail.com','$2a$10$GA.9NeeG6XqxLJjU9T3UOOlH4EdcJLTn1Ig6M65q70dHxPa75t95K','ROLE_KORISNIK',NULL,NULL),(4,1,NULL,'aaaa','admin@gmail.com','$2a$10$uKH3rMR/xHb3P15kqnJ06OwhkzrSQjFagUsns.vXqRksDYjYvoSsq','ROLE_MODERATOR',NULL,NULL),(6,1,NULL,'aaaaaa','admin@gmail.com','$2a$10$lRvu7b/n4ulkwcOfiuJ0n.9bXVt/tWVPRbR.jFOwyHj3oweAMK1wa','ROLE_KORISNIK',NULL,NULL),(8,1,NULL,'aa','admin@gmail.com','$2a$10$dT/nvwA0PeeWPUzCARCtWeHCIlTOMjs7AYn.GEitz6PvBkCl6qjS.','ROLE_MODERATOR',NULL,NULL),(9,NULL,NULL,'ab','admin@gmail.com','$2a$10$qW4QNZ1z9tkqXN7GDWb4r.HURlLCoBc27Q2sRhrgI3g48YqHes18q',NULL,NULL,NULL),(10,1,'0a7b9d8c-8f89-4497-8440-2c8a8bd3d10e','abc','admin@gmail.com','$2a$10$AwXCOeJhT4ehmU4NiyXT6ujXnjdLSGkdx66IZmi920PSSodOBrdQW','ROLE_KORISNIK',NULL,NULL),(26,NULL,NULL,'Pero Grubac','pero.grubac@student.etf.unibl.org','$2a$10$CfIZeFjOTHAhq.MaTsMLc.oA/w3pkMmLTlgNMFlQsV8jjvhpzoIO2',NULL,'GOOGLE',NULL),(27,NULL,NULL,'a','admin@gmail.com','$2a$10$UtYPRFxNnU7Xu/z5Dk2/FeRUlbqZXIG3J9OEUd2xQ4XP728ibZLCu',NULL,NULL,NULL),(28,NULL,NULL,'Fake Joker','fakejoker2122@gmail.com','$2a$10$UX3FtBfE2d9BOVtl6lCxcuuYOTkjR6aoAFtjFiYsA7IxuM/uKRVty',NULL,'GOOGLE',NULL);
+INSERT INTO `user` VALUES (1,1,NULL,'admin','admin@gmail.com','$2a$10$SHBpBtj88odoDNTy3SISieMP12WJwErrsCcM5dpZCbNxF777BxSIu','ROLE_ADMIN',NULL,'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsInBlcm1pc3Npb25zIjpbIkFERCIsIkRFTEVURSIsIlVQREFURSJdLCJzdWIiOiJhZG1pbiIsImlhdCI6MTcxMzEyMzIwMiwiZXhwIjoxNzEzMTI0NjQyfQ.wuWHM9nUega-gap3Vkl1O0sd_whfNBlJP188sGKrHVI'),(3,1,NULL,'aaa','admin@gmail.com','$2a$10$GA.9NeeG6XqxLJjU9T3UOOlH4EdcJLTn1Ig6M65q70dHxPa75t95K','ROLE_KORISNIK',NULL,NULL),(4,1,NULL,'aaaa','admin@gmail.com','$2a$10$uKH3rMR/xHb3P15kqnJ06OwhkzrSQjFagUsns.vXqRksDYjYvoSsq','ROLE_MODERATOR',NULL,NULL),(6,1,NULL,'aaaaaa','admin@gmail.com','$2a$10$lRvu7b/n4ulkwcOfiuJ0n.9bXVt/tWVPRbR.jFOwyHj3oweAMK1wa','ROLE_KORISNIK',NULL,NULL),(8,1,NULL,'aa','admin@gmail.com','$2a$10$dT/nvwA0PeeWPUzCARCtWeHCIlTOMjs7AYn.GEitz6PvBkCl6qjS.','ROLE_MODERATOR',NULL,NULL),(9,NULL,NULL,'ab','admin@gmail.com','$2a$10$qW4QNZ1z9tkqXN7GDWb4r.HURlLCoBc27Q2sRhrgI3g48YqHes18q',NULL,NULL,NULL),(10,1,'0a7b9d8c-8f89-4497-8440-2c8a8bd3d10e','abc','admin@gmail.com','$2a$10$AwXCOeJhT4ehmU4NiyXT6ujXnjdLSGkdx66IZmi920PSSodOBrdQW','ROLE_KORISNIK',NULL,NULL),(26,NULL,NULL,'Pero Grubac','pero.grubac@student.etf.unibl.org','$2a$10$CfIZeFjOTHAhq.MaTsMLc.oA/w3pkMmLTlgNMFlQsV8jjvhpzoIO2',NULL,'GOOGLE',NULL),(27,NULL,NULL,'a','admin@gmail.com','$2a$10$UtYPRFxNnU7Xu/z5Dk2/FeRUlbqZXIG3J9OEUd2xQ4XP728ibZLCu',NULL,NULL,NULL),(28,NULL,NULL,'Fake Joker','fakejoker2122@gmail.com','$2a$10$UX3FtBfE2d9BOVtl6lCxcuuYOTkjR6aoAFtjFiYsA7IxuM/uKRVty',NULL,'GOOGLE',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -141,4 +166,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-08  9:35:24
+-- Dump completed on 2024-04-15 10:44:09
