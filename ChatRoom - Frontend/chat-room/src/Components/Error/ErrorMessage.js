@@ -57,6 +57,32 @@ export const handleUpdateComments = (error) => {
   checkJWT(error);
   message.error("Error happened while updating comment requests ");
 };
+
+export const handleGetAllUsers = (error) => {
+  checkJWT(error);
+  message.error("Error happened while fetching users ");
+};
+
+export const handleChangeRole = (error) => {
+  checkJWT(error);
+  message.error("Error happened while changing role of a user");
+};
+
+export const handleAcceptUser = (error, type) => {
+  checkJWT(error);
+  message.error(`Error happened while  ${type} user`);
+};
+
+export const handleGetRequests = (error) => {
+  checkJWT(error);
+  message.error("Error happened while getting requests");
+};
+
+export const handleApproveUser = (error) => {
+  checkJWT(error);
+  message.error("Error happened while approving user requests ");
+};
+
 const checkJWT = (error) => {
   if (
     error.response &&

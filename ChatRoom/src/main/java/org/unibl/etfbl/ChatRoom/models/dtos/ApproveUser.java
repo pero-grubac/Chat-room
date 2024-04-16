@@ -12,11 +12,9 @@ import java.util.List;
 public class ApproveUser {
     private int id;
     private boolean isApproved;
-    @BannedWordsConstraint(paramName = "role")
     private RoleEnum role;
-    @BannedWordsConstraint(paramName = "permissions")
     private List<PermissionEnum> permissions;
-
+    private  Integer idRoom;
     @JsonProperty("isApproved")
     public void setApproved(boolean approved) {
         isApproved = approved;

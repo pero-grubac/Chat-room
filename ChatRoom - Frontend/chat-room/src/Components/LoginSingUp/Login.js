@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LoginSingUp.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -6,21 +6,21 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { loginUser, verifyToken } from "../../Services/login.service";
 import { message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+//import { useDispatch } from "react-redux";
 import { handleLoginError, handleTokenError } from "../Error/ErrorMessage";
-import { authState } from "../Redux/slices/userSlice"; 
-
+import { authState } from "../Redux/slices/userSlice";
+import { logintoken } from "../Redux/slices/userSlice.js";
 const Login = () => {
   const [isToken, setIsToken] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+ // const dispatch = useDispatch();
 
   const clearFields = () => {
     setPassword("");
@@ -41,11 +41,14 @@ const Login = () => {
   });
 
   const registerLink = () => {
-    navigate("/register");
+    redirect("/register");
     setIsToken(false);
     clearFields();
   };
-
+  useEffect(() => {
+    if ((!username && username !== "") || (!token && token !== "")) return;
+   // dispatch(logintoken(username, password, token));
+  }, [ password, token, username]);
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -75,8 +78,8 @@ const Login = () => {
       const response = await verifyToken(username, password, token);
       if (response.status === 200) {
         showMessage("success", "Wellcome.");
-        dispatch(authState());
-        navigate("/forum_rooms");
+       // dispatch(authState());
+       navigate("/forum_rooms")
       } else {
         setIsToken(false);
       }

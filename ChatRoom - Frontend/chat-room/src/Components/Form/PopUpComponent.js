@@ -1,7 +1,7 @@
 // ForumRoomComponent.js
 import React from "react";
 import { Button, Form, Input } from "antd";
-import "./ForumRoom.css";
+import "./PopUp.css";
 
 const PopUpComponent = ({
   onClose,

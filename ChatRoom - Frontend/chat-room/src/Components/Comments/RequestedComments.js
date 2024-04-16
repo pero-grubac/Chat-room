@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Comments.css";
-import { useDispatch } from "react-redux";
+//import { useDispatch } from "react-redux";
 import { logout } from "../Redux/slices/userSlice";
-import { Space, Table,  Modal } from "antd";
+import { Space, Table, Modal } from "antd";
 import UpdateComment from "./UpdateComment";
 import { CloseOutlined, CheckOutlined, EditOutlined } from "@ant-design/icons";
 import {
@@ -15,7 +15,6 @@ import {
   approveComment,
   deleteComment,
   getRequestedComments,
-
 } from "../../Services/comments.service";
 import {
   handleApproveComments,
@@ -76,7 +75,7 @@ const RequestedComments = ({ permissions, onClose, idRoom }) => {
       width: 201,
     },
   ];
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const [comments, setComments] = useState([]);
   const tableContainerRef = useRef(null);
   const [requestsUpdated, setRequestsUpdated] = useState(false);
@@ -97,11 +96,11 @@ const RequestedComments = ({ permissions, onClose, idRoom }) => {
       } catch (error) {
         console.log(error);
         handleGetRequestedComments(error);
-        dispatch(logout());
+       // dispatch(logout());
       }
     };
     getAllComments();
-  }, [dispatch, idRoom, requestsUpdated]);
+  }, [ idRoom, requestsUpdated]);
   useEffect(() => {
     function resizeHandler() {
       if (tableContainerRef.current) {
@@ -142,7 +141,7 @@ const RequestedComments = ({ permissions, onClose, idRoom }) => {
         } catch (error) {
           console.log(error);
           handleDeleteComments(error);
-          dispatch(logout());
+          //dispatch(logout());
         }
       },
       onCancel() {},
@@ -160,7 +159,7 @@ const RequestedComments = ({ permissions, onClose, idRoom }) => {
         } catch (error) {
           console.log(error);
           handleApproveComments(error);
-          dispatch(logout());
+         // dispatch(logout());
         }
       },
       onCancel() {},

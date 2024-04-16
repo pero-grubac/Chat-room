@@ -13,10 +13,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.unibl.etfbl.ChatRoom.enums.RegristrationSourceEnum;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @Builder
@@ -58,6 +55,14 @@ public class UserEntity implements UserDetails{
     @Basic
     @Column(name = "JWT", nullable = true)
     private String JWT;
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_has_room",
+            joinColumns = @JoinColumn(name = "IdUser", referencedColumnName = "IdUser"),
+            inverseJoinColumns = @JoinColumn(name = "IdForumRoom", referencedColumnName = "IdForumRoom")
+    )
+    private Set<ForumRoomEntity> rooms = new HashSet<>();
     @Override
     public String getPassword() {
         return password;

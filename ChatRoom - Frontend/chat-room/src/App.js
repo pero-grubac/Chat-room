@@ -3,13 +3,15 @@ import Login from "./Components/LoginSingUp/Login";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Register from "./Components/LoginSingUp/Register";
 import { Error404 } from "./Components/Error";
-import { useDispatch, useSelector } from "react-redux";
+//import { useDispatch, useSelector } from "react-redux";
 import ForumRoom from "./Components/ForumRooms/ForumRooms";
 import React, { useEffect } from "react";
 import { authState } from "./Components/Redux/slices/userSlice";
+import Users from "./Components/Users/Users";
 
 const App = () => {
-  const {
+//  const dispatch = useDispatch();
+  /*const {
     user,
     role,
     permissions,
@@ -17,28 +19,18 @@ const App = () => {
     authenticationFailed,
     loading,
   } = useSelector((state) => state.users);
-
-  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(authState());
-  }, []);
+  }, [dispatch]);*/
 
   return (
     <BrowserRouter>
       <div>
         <Routes>
-          <Route
-            exact
-            path="/login"
-            element={
-              !authenticated ? <Login /> : <Navigate to="/forum_rooms" />
-            }
-          />
-          <Route
-            exact
-            path="/forum_rooms"
-            element={authenticated ? <ForumRoom /> : <Navigate to="/login" />}
-            />
+          <Route exact path="/login" element={<Login />} />
+
+          <Route exact path="/forum_rooms" element={<ForumRoom />} />
+          <Route exact path="/users" element={<Users />} />
           <Route exact path="/" element={<Navigate to="/login" />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/error404" element={<Error404 />} />

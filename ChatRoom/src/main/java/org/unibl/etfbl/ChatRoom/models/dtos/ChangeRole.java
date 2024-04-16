@@ -10,8 +10,7 @@ import java.util.List;
 @Data
 public class ChangeRole {
     private Integer id;
-    @BannedWordsConstraint(paramName = "role")
     private RoleEnum role;
-    @BannedWordsConstraint(paramName = "permissions")
     private List<PermissionEnum> permissions;
+
 }

@@ -20,6 +20,7 @@ export const verifyToken = async (username, password, token) => {
   sessionStorage.setItem("auth", user.token);
   const userDetails = jwtDecode(sessionStorage.getItem("auth"));
   sessionStorage.setItem("role", userDetails.role);
+  sessionStorage.setItem("sub", userDetails.sub);
   sessionStorage.setItem("permissions", userDetails.permissions);
   return response;
 };

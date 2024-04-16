@@ -1,0 +1,101 @@
+.user-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 80%;
+  z-index: 1;
+  background-color:  rgba(255, 255, 255, 0.5);;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ant-table {
+  width: 100%;
+  display: "flex";
+}
+.UserPopModal {
+  width: 400px; /* Adjust width as needed */
+  max-width: 100%;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.UserPopForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.UserPopFormItem {
+  margin-bottom: 10px;
+}
+
+.UserPopButtons {
+  display: flex;
+  justify-content: center; /* Align buttons to the center */
+  margin-top: 20px;
+}
+
+.UserPopButtons button {
+  margin: 0 5px; /* Add margin between buttons */
+}
+
+.requests-button-top {
+  top: 10px;
+  left: 10px;
+}
+.button-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.requests-button {
+  padding: 20px;
+  margin-bottom: 10px; /* Add margin between buttons */
+  background: transparent;
+  backdrop-filter: blur(7px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+.button-logout {
+  bottom: 15px;
+}
+.requested-user-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 80%;
+  z-index: 1000;
+  background-color: #f0f2f5;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 10px;
+  cursor: pointer;
+}

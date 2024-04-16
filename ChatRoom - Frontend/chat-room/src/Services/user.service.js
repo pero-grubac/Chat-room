@@ -22,6 +22,7 @@ export const approveUser = async (user) => {
     isApproved: user.isApproved,
     role: user.role,
     permissions: user.permissions,
+    idRoom: user.idRoom,
   });
   return response;
 };

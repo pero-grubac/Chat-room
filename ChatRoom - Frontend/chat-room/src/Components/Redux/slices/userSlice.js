@@ -5,24 +5,17 @@ import { jwtDecode } from "jwt-decode";
 
 const logoutAction = (state, action) => {
   loginService.logout();
-  state.authenticated = false;
-  state.loading = false;
-  state.users = [];
-  state.user = null;
-  state.permissions = [];
+  return null;
 };
 
 const login = createAsyncThunk("auth/login", ({ username, password }) =>
   loginService.loginUser(username, password)
 );
-const token = createAsyncThunk("auth/token", ({ username, password, email }) =>
+export const logintoken = createAsyncThunk("auth/token", ({ username, password, email }) =>
   loginService.token(username, password, email)
 );
 const getAll = createAsyncThunk("users/getUsers", () => userService.getUsers());
 
-const changeRole = createAsyncThunk("users/changeRole", ({ user }) =>
-  userService.changeRole(user)
-);
 
 const approveUser = createAsyncThunk("users/approve", ({ user }) =>
   userService.approveUser(user)
@@ -98,14 +91,14 @@ const userSlice = createSlice({
         state.authenticationFailed = true;
         state.loading = true;
       })
-      .addCase(token.pending, (state, action) => {
+      .addCase(logintoken.pending, (state, action) => {
         state.loading = true;
       })
-      .addCase(token.rejected, (state, action) => {
+      .addCase(logintoken.rejected, (state, action) => {
         state.authenticationFailed = true;
         state.loading = true;
       })
-      .addCase(token.fulfilled, onSuccessAuth)
+      .addCase(logintoken.fulfilled, onSuccessAuth)
       .addCase(authState.pending, (state, action) => {
         state.loading = true;
       })
@@ -113,9 +106,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(authState.fulfilled, onSuccessAuth)
-      .addCase(changeRole.fulfilled, (state, action) => {
-        state.users = updateElements(state.users, action.payload);
-      })
+      
       .addCase(approveUser.fulfilled, (state, action) => {
         state.users = updateElements(state.users, action.payload);
       })

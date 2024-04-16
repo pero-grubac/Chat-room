@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+//import { useDispatch } from "react-redux";
 import { logout } from "../Redux/slices/userSlice";
 import { hadnleCreateComment, hadnleGetComments } from "../Error/ErrorMessage";
 import { createComment, getComments } from "../../Services/comments.service";
@@ -8,7 +8,7 @@ import { List, Input, Button } from "antd";
 import { SendOutlined, CloseOutlined } from "@ant-design/icons";
 
 const Comments = ({ onClose, idroom }) => {
-  const dispatch = useDispatch();
+ // const dispatch = useDispatch();
   const [message, setMessage] = useState("");
   const [comments, setComments] = useState([]);
   useEffect(() => {
@@ -18,11 +18,11 @@ const Comments = ({ onClose, idroom }) => {
         setComments(response.data);
       } catch (error) {
         hadnleGetComments(error);
-        dispatch(logout());
+       // dispatch(logout());
       }
     };
     getAllComments();
-  }, [dispatch, idroom]);
+  }, [ idroom]);
 
   const handleCreateComment = async () => {
     try {
@@ -30,7 +30,7 @@ const Comments = ({ onClose, idroom }) => {
     } catch (error) {
       console.log(error);
       hadnleCreateComment(error);
-      dispatch(logout());
+     // dispatch(logout());
     }
     setMessage("");
   };
@@ -54,23 +54,26 @@ const Comments = ({ onClose, idroom }) => {
 
   return (
     <div className="container">
-      <CloseOutlined className="close-icon" key={"close"} onClick={onClose} />
-
-      <h2>Comments</h2>
-      <List
-        itemLayout="horizontal"
-        dataSource={comments}
-        renderItem={(comment, index) => (
-          <List.Item>
-            <List.Item.Meta
-              title={
-                <span>{`${comment.user.username} ${formatDateTime(comment.createdAt)}`}</span>
-              }
-              description={comment.text}
-            />
-          </List.Item>
-        )}
-      />
+      <div className="header">
+        <h2 style={{ textAlign: "center" }}>Comments</h2>
+        <CloseOutlined className="close-icon" key={"close"} onClick={onClose} />
+      </div>
+      <div className="list-container">
+        <List
+          itemLayout="horizontal"
+          dataSource={comments}
+          renderItem={(comment, index) => (
+            <List.Item>
+              <List.Item.Meta
+                title={
+                  <span>{`${comment.user.username} ${formatDateTime(comment.createdAt)}`}</span>
+                }
+                description={comment.text}
+              />
+            </List.Item>
+          )}
+        />
+      </div>
       <div className="input-container">
         <Input
           rows={4}

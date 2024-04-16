@@ -12,15 +12,19 @@ import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.*;
+import org.unibl.etfbl.ChatRoom.models.entities.ForumRoomEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.PermissionEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
+import org.unibl.etfbl.ChatRoom.repositories.ForumRoomEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
 import org.unibl.etfbl.ChatRoom.services.EmailService;
+import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 import org.unibl.etfbl.ChatRoom.services.PermissionService;
 import org.unibl.etfbl.ChatRoom.services.UserService;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -39,7 +43,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailService emailService;
-
+    @Autowired
+    private ForumRoomEntityRepository forumRoomEntityRepository;
 
     @Override
     public List<UserOutput> getAllUsers() {
@@ -118,6 +123,16 @@ public class UserServiceImpl implements UserService {
         userEntity.setRole(role);
     }
 
+    private boolean doesUserHavePermission(UserEntity user, PermissionEnum permission) {
+        List<PermissionEntity> permisssions = user.getPermissions();
+        for (PermissionEntity per : permisssions) {
+            if (per.getPermission().equals(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void setPermissionsForRole(RoleEnum role, List<PermissionEnum> permissions, UserEntity userEntity) throws ConflictException {
         switch (role) {
             case ROLE_ADMIN:
@@ -125,7 +140,10 @@ public class UserServiceImpl implements UserService {
                     throw new ConflictException("ROLE_ADMIN must have all permissions");
                 }
                 for (PermissionEnum permission : PermissionEnum.values()) {
-                    permissionService.create(new PermissionEntity(permission, userEntity));
+                    if (!doesUserHavePermission(userEntity, permission)) {
+                        permissionService.create(new PermissionEntity(permission, userEntity));
+                    }
+
                 }
                 break;
             case ROLE_MODERATOR:
@@ -133,13 +151,17 @@ public class UserServiceImpl implements UserService {
                     throw new ConflictException("Permissions cannot be empty for ROLE_MODERATOR");
                 }
                 for (PermissionEnum permission : permissions) {
-                    permissionService.create(new PermissionEntity(permission, userEntity));
+                    if (!doesUserHavePermission(userEntity, permission)) {
+                        permissionService.create(new PermissionEntity(permission, userEntity));
+                    }
                 }
                 break;
             case ROLE_KORISNIK:
                 if (!permissions.isEmpty()) {
                     throw new ConflictException("ROLE_KORISNIK should not have any permissions");
                 }
+                permissionService.deleteAllByIdUser(userEntity.getIdUser());
+                userEntity.setPermissions(null);
                 break;
             default:
                 throw new ConflictException("Unsupported user role");
@@ -160,10 +182,13 @@ public class UserServiceImpl implements UserService {
         if (userEntity.getIsApproved() == 1) {
             checkAndSetUserRole(approveUser.getRole(), userEntity);
             setPermissionsForRole(approveUser.getRole(), approveUser.getPermissions(), userEntity);
+            ForumRoomEntity forumRoom = forumRoomEntityRepository.findById(approveUser.getIdRoom()).orElseThrow(
+                    () -> new NotFoundException("Forum room with id: " + approveUser.getIdRoom() + " doesn't exists."));
+            userEntity.getRooms().add(forumRoom);
         }
         repository.saveAndFlush(userEntity);
         entityManager.refresh(userEntity);
-        emailService.sendEmail(userEntity.getEmail(), userEntity.getUsername(), "ChatRoom-regristacija","Odobren vam je zahtjev za registraciju");
+        emailService.sendEmail(userEntity.getEmail(), userEntity.getUsername(), "ChatRoom-regristacija", "Odobren vam je zahtjev za registraciju");
     }
 
     @Override
@@ -174,6 +199,8 @@ public class UserServiceImpl implements UserService {
         if (userEntity.getIsApproved() == null || userEntity.getIsApproved() == 0) {
             throw new ConflictException("Unapproved user");
         }
+        Set<ForumRoomEntity> rooms = userEntity.getRooms();
+
         checkAndSetUserRole(changeRole.getRole(), userEntity);
         setPermissionsForRole(changeRole.getRole(), changeRole.getPermissions(), userEntity);
 

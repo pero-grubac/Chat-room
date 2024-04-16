@@ -11,13 +11,16 @@ import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.ForumRoom;
 import org.unibl.etfbl.ChatRoom.models.entities.CommentEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.ForumRoomEntity;
+import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 import org.unibl.etfbl.ChatRoom.repositories.CommentEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.ForumRoomEntityRepository;
+import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
 import org.unibl.etfbl.ChatRoom.services.CommentService;
 import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -27,7 +30,8 @@ public class ForumRoomServiceImpl implements ForumRoomService {
     private ForumRoomEntityRepository repository;
     @Autowired
     private CommentEntityRepository commentEntityRepository;
-
+    @Autowired
+    private UserEntityRepository userEntityRepository;
     @Autowired
     private ModelMapper modelMapper;
     @PersistenceContext
@@ -81,8 +85,14 @@ public class ForumRoomServiceImpl implements ForumRoomService {
             throw new NotFoundException("Forum room with id: " + idForumRoom + " doesn't exists.");
         } else {
             List<CommentEntity> comments = commentEntityRepository.findAllByForumRoom_IdForumRoom(idForumRoom);
-            for(CommentEntity c : comments)
+            for (CommentEntity c : comments)
                 commentEntityRepository.deleteById(c.getIdComment());
+            List<UserEntity> users = userEntityRepository.getAllByRooms_IdForumRoom(idForumRoom);
+            for(UserEntity u : users){
+                Set<ForumRoomEntity> rooms = u.getRooms();
+                rooms.removeIf(r->r.getIdForumRoom().equals(idForumRoom));
+                userEntityRepository.saveAndFlush(u);
+            }
             repository.deleteById(idForumRoom);
         }
     }

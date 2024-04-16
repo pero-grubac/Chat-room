@@ -6,7 +6,6 @@ import commentSlice from "./slices/commentSlice";
 export default configureStore({
   reducer: {
     users: userSlice,
-    forumRooms: forumRoomSlice,
-    comments: commentSlice,
+  
   },
 });

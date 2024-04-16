@@ -11,11 +11,9 @@ const clientId =
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
       <GoogleOAuthProvider clientId={clientId}>
         <App />
       </GoogleOAuthProvider>
-    </Provider>
   </React.StrictMode>
 );
 

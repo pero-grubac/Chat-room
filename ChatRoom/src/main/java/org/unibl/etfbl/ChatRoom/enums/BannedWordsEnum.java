@@ -7,7 +7,7 @@ public enum BannedWordsEnum {
     USERNAME("anonymousUser"),
     // SQL
     SELECT("select"),
-    DELETE("delete"),
+   // DELETE("delete"),
     DROP("drop"),
     INSERT("insert"),
     UPDATE("update"),

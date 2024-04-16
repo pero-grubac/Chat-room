@@ -19,4 +19,5 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Integer>
     Optional<UserEntity> getUserEntityByEmail(String email);
     Optional<UserEntity> findByEmail(String email);
     List<UserEntity> getAllByIsApproved(Byte isApproved);
+    List<UserEntity> getAllByRooms_IdForumRoom(Integer id);
 }

@@ -7,34 +7,35 @@ import {
   LogoutOutlined,
   PlusOutlined,
   DeleteOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Card, Button } from "antd";
 import {
   deleteForumRoom,
   getForumRooms,
 } from "../../Services/forumRooms.Service";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import {
   hadnleDeleteForumRoom,
   handleGetForumRooms,
 } from "../Error/ErrorMessage";
-import { useDispatch } from "react-redux";
-import { logout } from "../Redux/slices/userSlice";
+//import { useDispatch, useSelector } from "react-redux";
+import { authState, logout } from "../Redux/slices/userSlice";
 import "./ForumRoom.css";
-import { ROLE_ADMIN,  ROLE_MODERATOR } from "../Util/RolePermission";
+import { ROLE_ADMIN, ROLE_MODERATOR } from "../Util/RolePermission";
 import UpdateForumRoom from "./UpdateForumRoom";
 import NewForumRoom from "./NewForumRoom";
 import { Modal } from "antd";
 import Comments from "../Comments/Comments";
 import RequestedComments from "../Comments/RequestedComments";
+import RequestedUser from "../Users/RequestedUsers";
 
 const { confirm } = Modal;
 const ForumRoom = () => {
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [userRole, setUserRole] = useState("");
-  const [permissions, setPermissions] = useState([]);
+  //const dispatch = useDispatch();
+
   const [showUpdateRoomForm, setShowUpdateRoomForm] = useState(false);
   const [roomName, setRoomName] = useState("");
   const [id, setid] = useState("");
@@ -42,6 +43,8 @@ const ForumRoom = () => {
   const [showNewRoomForm, setshowNewRoomForm] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showRequestedComments, setShowRequestedComments] = useState(false);
+  const userRole = sessionStorage.getItem("role"); //useSelector((state) => state.users.role);
+  const permissions = sessionStorage.getItem("permissions"); //useSelector((state) => state.users.permissions);
 
   useEffect(() => {
     const fetchForumRooms = async () => {
@@ -51,27 +54,18 @@ const ForumRoom = () => {
       } catch (error) {
         console.log(error);
         handleGetForumRooms(error);
-        dispatch(logout());
-        // navigate("/login");
+        // dispatch(logout());
+        navigate("/login");
       }
     };
-
+    //   dispatch(authState());
     fetchForumRooms();
-    if (sessionStorage.getItem("role") !== "") {
-      const role = sessionStorage.getItem("role");
-      setUserRole(role);
-    }
-
-    if (sessionStorage.getItem("permissions") !== "") {
-      const p = sessionStorage.getItem("permissions");
-      setPermissions(p);
-    }
-  }, [dispatch, navigate, roomUpdated]);
+  }, [navigate, roomUpdated]);
 
   const handleLogout = async () => {
     try {
-      dispatch(logout());
-      //   navigate("/login");
+      //dispatch(logout());
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -110,8 +104,8 @@ const ForumRoom = () => {
         } catch (error) {
           console.log(error);
           hadnleDeleteForumRoom(error);
-          dispatch(logout());
-          //   navigate("/login");
+          // dispatch(logout());
+          navigate("/login");
         }
       },
       onCancel() {},
@@ -126,7 +120,11 @@ const ForumRoom = () => {
     setShowRequestedComments(false);
   };
 
-  const handleUsers = () => {};
+  const handleUsers = () => {
+    //dispatch(authState());
+    navigate("/users", { replace: true });
+  };
+  
   return (
     <div>
       {userRole === ROLE_ADMIN && showUpdateRoomForm && (
@@ -136,37 +134,41 @@ const ForumRoom = () => {
           id={id}
         />
       )}
-      {(userRole === ROLE_ADMIN || userRole === ROLE_MODERATOR) && showRequestedComments && (
-        <RequestedComments
-          permissions={permissions}
-          onClose={handleCloseForm}
-          idRoom={id}
-        />
-      )}
+      {(userRole === ROLE_ADMIN || userRole === ROLE_MODERATOR) &&
+        showRequestedComments && (
+          <RequestedComments
+            permissions={permissions}
+            onClose={handleCloseForm}
+            idRoom={id}
+          />
+        )}
       {userRole === ROLE_ADMIN && showNewRoomForm && (
         <NewForumRoom onClose={handleCloseForm} roomName={roomName} />
       )}
       {showComments && <Comments onClose={handleCloseForm} idroom={id} />}
-      {userRole === ROLE_ADMIN && (
+      <div className="button-container">
+        {userRole === ROLE_ADMIN && (
+          <Button
+            className="forum-button forum-button-top"
+            size="large"
+            type="primary"
+            shape="circle"
+            onClick={handleUsers}
+          >
+            <UserOutlined style={{ fontSize: "24px" }} />
+          </Button>
+        )}
+     
         <Button
           className="forum-button forum-button-top"
           size="large"
           type="primary"
           shape="circle"
-          onClick={handleUsers}
+          onClick={handleLogout}
         >
-          <UserOutlined style={{ fontSize: "24px" }} />
+          <LogoutOutlined style={{ fontSize: "24px" }} />
         </Button>
-      )}
-      <Button
-        className="forum-button forum-button-bottom"
-        size="large"
-        type="primary"
-        shape="circle"
-        onClick={handleLogout}
-      >
-        <LogoutOutlined style={{ fontSize: "24px" }} />
-      </Button>
+      </div>
       <div
         style={{
           display: "flex",
