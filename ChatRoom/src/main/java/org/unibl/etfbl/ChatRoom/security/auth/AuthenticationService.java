@@ -10,6 +10,7 @@ import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.AuthRequest;
 import org.unibl.etfbl.ChatRoom.models.dtos.AuthResponse;
 import org.unibl.etfbl.ChatRoom.models.dtos.OAuthTokenRequest;
+import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
 import org.unibl.etfbl.ChatRoom.security.jwt.JwtService;
 import org.unibl.etfbl.ChatRoom.services.EmailService;
@@ -63,6 +64,21 @@ public class AuthenticationService {
     }
 
     public AuthResponse verifyOAuthToken(OAuthTokenRequest request) {
-        return null;
+        UserEntity user = repository.getUserEntityByEmail(request.getEmail()).orElseThrow(
+                () -> new NotFoundException("User with email " + request.getEmail() + " not found")
+        );
+        System.out.println((user.getUsername()));
+        if (Objects.equals(user.getTwoFactorToken(), request.getToken())
+                && Objects.equals(user.getSource().toString(), request.getType())) {
+            var jwt = jwtService.generateToken(user);
+            user.setJWT(jwt);
+            user.setTwoFactorToken(null);
+            repository.saveAndFlush(user);
+            return AuthResponse.builder().token(jwt).build();
+
+        } else {
+            throw new ConflictException("User with username " + user.getUsername() + " doesn't have two factor token.");
+        }
+
     }
 }

@@ -5,17 +5,22 @@ import { jwtDecode } from "jwt-decode";
 
 const logoutAction = (state, action) => {
   loginService.logout();
-  return ;
+  return;
 };
 
 const login = createAsyncThunk("auth/login", ({ username, password }) =>
   loginService.loginUser(username, password)
 );
-export const logintoken = createAsyncThunk("auth/token", ({ username, password, email }) =>
-  loginService.token(username, password, email)
+export const logintoken = createAsyncThunk(
+  "auth/token",
+  ({ username, password, token }) =>
+    loginService.verifyToken(username, password, token)
+);
+export const logintokenOAuth = createAsyncThunk(
+  "auth/token/oauth",
+  ({ email, token, type }) => loginService.verifyTokenOAuth(email, token, type)
 );
 const getAll = createAsyncThunk("users/getUsers", () => userService.getUsers());
-
 
 const approveUser = createAsyncThunk("users/approve", ({ user }) =>
   userService.approveUser(user)
@@ -43,17 +48,16 @@ const updateElements = (arr, obj) => {
 
 const onSuccessAuth = (state, action) => {
   const token = action.payload;
-  if (typeof token !== 'string') {
+  if (typeof token !== "string") {
     return;
   }
-    const user = jwtDecode(token);
-    state.authenticated = true;
-    state.authenticationFailed = false;
-    state.loading = false;
-    state.role = user.role;
-    state.user = user.sub;
-    state.permissions = user.permissions;
-  
+  const user = jwtDecode(token);
+  state.authenticated = true;
+  state.authenticationFailed = false;
+  state.loading = false;
+  state.role = user.role;
+  state.user = user.sub;
+  state.permissions = user.permissions;
 };
 
 export const authState = createAsyncThunk("users/jwt", () => {
@@ -99,6 +103,14 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(logintoken.fulfilled, onSuccessAuth)
+      .addCase(logintokenOAuth.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(logintokenOAuth.rejected, (state, action) => {
+        state.authenticationFailed = true;
+        state.loading = true;
+      })
+      .addCase(logintokenOAuth.fulfilled, onSuccessAuth)
       .addCase(authState.pending, (state, action) => {
         state.loading = true;
       })
@@ -106,7 +118,7 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(authState.fulfilled, onSuccessAuth)
-      
+
       .addCase(approveUser.fulfilled, (state, action) => {
         state.users = updateElements(state.users, action.payload);
       })

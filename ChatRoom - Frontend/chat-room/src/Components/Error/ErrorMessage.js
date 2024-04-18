@@ -83,6 +83,11 @@ export const handleApproveUser = (error) => {
   message.error("Error happened while approving user requests ");
 };
 
+export const handleRegisterUser = (error) => {
+  checkJWT(error);
+  message.error("Error happened during registration ");
+};
+
 const checkJWT = (error) => {
   if (
     error.response &&

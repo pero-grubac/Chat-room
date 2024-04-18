@@ -62,19 +62,21 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         }
     }
-@PostMapping("/oauth/token")
-public ResponseEntity<?> verifyOAuthToken(@RequestBody @Valid OAuthTokenRequest request, BindingResult bindingResult) {
 
-    if (bindingResult.hasErrors())
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed");
-    try {
-        return ResponseEntity.ok(authenticationService.verifyOAuthToken(request));
-    } catch (Exception e) {
-        exceptionLoggingAdvice.afterThrowing(e);
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    @PostMapping("/oauth/token")
+    public ResponseEntity<?> verifyOAuthToken(@RequestBody @Valid OAuthTokenRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors())
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed");
+        try {
+            return ResponseEntity.ok(authenticationService.verifyOAuthToken(request));
+        } catch (Exception e) {
+            exceptionLoggingAdvice.afterThrowing(e);
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        }
+
     }
 
-}
     @CrossOrigin(origins = "https://accounts.google.com")
     @PostMapping("/oauth")
     public ResponseEntity<?> oauth(@RequestBody Map<String, Object> user) {

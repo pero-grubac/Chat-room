@@ -6,6 +6,8 @@ import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { handleRegisterUser } from "../Error/ErrorMessage";
+import { register } from "../../Services/login.service";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -20,13 +22,27 @@ const Register = () => {
       content: content,
     });
   };
-// login uradi
+  // login uradi
+  const registerUser = async () => {
+    try {
+      const response = await register(username, password, email);
+      if (response.status === 200) {
+        showMessage("success", "You have successfully registered");
+        backToLogin();
+      } else {
+        showMessage("error", "Something went wrong");
+        backToLogin();
+      }
+    } catch (error) {
+      handleRegisterUser(error);
+    }
+  };
   const handleRegister = () => {
     const strongPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{"':;?/>.<,])(?=.{8,})/;
     const isValidPassword = strongPasswordRegex.test(password);
     if (isValidPassword) {
-      showMessage("success", "You have successfully registered");
+      registerUser();
     } else {
       showMessage(
         "error",
@@ -36,14 +52,14 @@ const Register = () => {
   };
 
   const backToLogin = () => {
+    clearFields();
     navigate("/login");
-    clearFields()
   };
-const clearFields=()=>{
-    setEmail("")
-    setPassword("")
-    setUsername("")
-}
+  const clearFields = () => {
+    setEmail("");
+    setPassword("");
+    setUsername("");
+  };
   return (
     <div className={`wrapper active`}>
       {contextHolder}

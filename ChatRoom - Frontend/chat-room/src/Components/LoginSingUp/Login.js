@@ -4,9 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
-import { loginUser, oauth, verifyToken } from "../../Services/login.service";
+import {
+  loginUser,
+  oauth,
+  verifyToken,
+  verifyTokenOAuth,
+} from "../../Services/login.service";
 import { message } from "antd";
-import { redirect, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -20,7 +25,8 @@ const Login = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const [isOAuth, setIsOAuth] = useState(false);
+  const [email, setEmail] = useState("");
   const clearFields = () => {
     setPassword("");
     setUsername("");
@@ -38,11 +44,15 @@ const Login = () => {
         );
 
         const callDB = await oauth(userInfo.data);
+
         if (callDB.status === 200) {
           showMessage(
             "success",
             "You have successfully loged in. Procede with token."
           );
+          setEmail(userInfo.data.email);
+          setUsername(userInfo.data.name);
+          setIsOAuth(true);
           setIsToken(true);
         } else if (callDB.status === 201) {
           showMessage("success", "You have successfully registered");
@@ -56,9 +66,9 @@ const Login = () => {
   });
 
   const registerLink = () => {
-    redirect("/register");
     setIsToken(false);
     clearFields();
+    navigate("/register");
   };
   useEffect(() => {
     if ((!username && username !== "") || (!token && token !== "")) return;
@@ -87,10 +97,23 @@ const Login = () => {
       content: content,
     });
   };
-  // TODO provjera da li google ili ne ako jeste treba napraviti novi endpoint sa emailom,tipom i tokenom
-  // ako je noramlni onda ovo ostaje
-  const handleToken = async (e) => {
-    e.preventDefault();
+  const userTokenOAuth = async () => {
+    try {
+      const response = await verifyTokenOAuth(email, token, "GOOGLE");
+      if (response.status === 200) {
+        showMessage("success", "Wellcome.");
+        dispatch(authState());
+        navigate("/forum_rooms");
+      } else {
+        setIsToken(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsToken(false);
+      handleTokenError();
+    }
+  };
+  const userToken = async () => {
     try {
       const response = await verifyToken(username, password, token);
       if (response.status === 200) {
@@ -104,6 +127,14 @@ const Login = () => {
       console.log(error);
       setIsToken(false);
       handleTokenError();
+    }
+  };
+  const handleToken = async (e) => {
+    e.preventDefault();
+    if (isOAuth) {
+      userTokenOAuth();
+    } else {
+      userToken();
     }
   };
 

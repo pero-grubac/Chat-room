@@ -38,6 +38,20 @@ export const oauth = async (oiduser) => {
   return response;
 };
 
+export const verifyTokenOAuth = async (email, token, type) => {
+  const response = await instance.post("/auth/oauth/token", {
+    email,
+    token,
+    type,
+  });
+  const user = response.data;
+  sessionStorage.setItem("auth", user.token);
+  const userDetails = jwtDecode(sessionStorage.getItem("auth"));
+  sessionStorage.setItem("role", userDetails.role);
+  sessionStorage.setItem("sub", userDetails.sub);
+  sessionStorage.setItem("permissions", userDetails.permissions);
+  return response;
+};
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   loginUser,
@@ -45,4 +59,5 @@ export default {
   verifyToken,
   register,
   oauth,
+  verifyTokenOAuth,
 };
