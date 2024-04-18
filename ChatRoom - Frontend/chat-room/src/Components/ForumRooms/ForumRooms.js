@@ -7,19 +7,18 @@ import {
   LogoutOutlined,
   PlusOutlined,
   DeleteOutlined,
-  UserAddOutlined,
 } from "@ant-design/icons";
 import { Card, Button } from "antd";
 import {
   deleteForumRoom,
   getForumRooms,
 } from "../../Services/forumRooms.Service";
-import { redirect, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import {
   hadnleDeleteForumRoom,
   handleGetForumRooms,
 } from "../Error/ErrorMessage";
-//import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { authState, logout } from "../Redux/slices/userSlice";
 import "./ForumRoom.css";
 import { ROLE_ADMIN, ROLE_MODERATOR } from "../Util/RolePermission";
@@ -28,13 +27,12 @@ import NewForumRoom from "./NewForumRoom";
 import { Modal } from "antd";
 import Comments from "../Comments/Comments";
 import RequestedComments from "../Comments/RequestedComments";
-import RequestedUser from "../Users/RequestedUsers";
 
 const { confirm } = Modal;
 const ForumRoom = () => {
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [showUpdateRoomForm, setShowUpdateRoomForm] = useState(false);
   const [roomName, setRoomName] = useState("");
@@ -54,17 +52,18 @@ const ForumRoom = () => {
       } catch (error) {
         console.log(error);
         handleGetForumRooms(error);
-        // dispatch(logout());
-        navigate("/login");
+        dispatch(logout());
+        navigate("/login", { replace: true });
       }
     };
     //   dispatch(authState());
     fetchForumRooms();
-  }, [navigate, roomUpdated]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [  roomUpdated]);
 
   const handleLogout = async () => {
     try {
-      //dispatch(logout());
+      dispatch(logout());
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
@@ -104,8 +103,8 @@ const ForumRoom = () => {
         } catch (error) {
           console.log(error);
           hadnleDeleteForumRoom(error);
-          // dispatch(logout());
-          navigate("/login");
+          dispatch(logout());
+          navigate("/login", { replace: true });
         }
       },
       onCancel() {},
@@ -121,10 +120,10 @@ const ForumRoom = () => {
   };
 
   const handleUsers = () => {
-    //dispatch(authState());
-    navigate("/users", { replace: true });
+    dispatch(authState());
+    navigate("/users");
   };
-  
+
   return (
     <div>
       {userRole === ROLE_ADMIN && showUpdateRoomForm && (
@@ -158,7 +157,7 @@ const ForumRoom = () => {
             <UserOutlined style={{ fontSize: "24px" }} />
           </Button>
         )}
-     
+
         <Button
           className="forum-button forum-button-top"
           size="large"

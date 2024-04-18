@@ -39,7 +39,7 @@ public class ActionLoggingAdvice {
         Object[] array = pjp.getArgs();
         // PROVJERI stvari argumenata
         Object result;
-        String message = String.format("Method invoked %s: %s.%s()", username, className, methodName);
+        String message = String.format("Method invoked username <%s>: classname <%s> method <%s()>", username, className, methodName);
         log.info(message);
         result = pjp.proceed();
        /* LoggerEntity logger = new LoggerEntity();

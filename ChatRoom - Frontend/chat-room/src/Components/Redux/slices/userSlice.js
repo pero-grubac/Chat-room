@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 
 const logoutAction = (state, action) => {
   loginService.logout();
-  return null;
+  return ;
 };
 
 const login = createAsyncThunk("auth/login", ({ username, password }) =>

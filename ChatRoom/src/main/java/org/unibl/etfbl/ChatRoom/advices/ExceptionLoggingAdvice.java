@@ -28,7 +28,7 @@ public class ExceptionLoggingAdvice {
     public void afterThrowing(Exception ex) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "anonymousUser";
-        String message = String.format("Exception occurred for user %s: %s", username, ex.getMessage());
+        String message = String.format("Exception occurred for user <%s>: message <%s>", username, ex.getMessage());
         log.error(message);
        /* LoggerEntity logger = new LoggerEntity();
         logger.setActionType(ActionEnum.EXCEPTION);

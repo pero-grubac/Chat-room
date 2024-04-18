@@ -4,23 +4,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
-import { loginUser, verifyToken } from "../../Services/login.service";
+import { loginUser, oauth, verifyToken } from "../../Services/login.service";
 import { message } from "antd";
 import { redirect, useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-//import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { handleLoginError, handleTokenError } from "../Error/ErrorMessage";
 import { authState } from "../Redux/slices/userSlice";
-import { logintoken } from "../Redux/slices/userSlice.js";
 const Login = () => {
   const [isToken, setIsToken] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate()
- // const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const clearFields = () => {
     setPassword("");
@@ -30,13 +29,29 @@ const Login = () => {
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const userInfo = await axios
-        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        })
-        .then((res) => res.data);
+      try {
+        const userInfo = await axios.get(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          }
+        );
 
-      console.log(userInfo);
+        const callDB = await oauth(userInfo.data);
+        if (callDB.status === 200) {
+          showMessage(
+            "success",
+            "You have successfully loged in. Procede with token."
+          );
+          setIsToken(true);
+        } else if (callDB.status === 201) {
+          showMessage("success", "You have successfully registered");
+        } else {
+          showMessage("error", "Something wrong with account");
+        }
+      } catch (error) {
+        handleLoginError();
+      }
     },
   });
 
@@ -47,8 +62,9 @@ const Login = () => {
   };
   useEffect(() => {
     if ((!username && username !== "") || (!token && token !== "")) return;
-   // dispatch(logintoken(username, password, token));
-  }, [ password, token, username]);
+    // dispatch(logintoken(username, password, token));
+  }, [password, token, username]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -71,15 +87,16 @@ const Login = () => {
       content: content,
     });
   };
-
+  // TODO provjera da li google ili ne ako jeste treba napraviti novi endpoint sa emailom,tipom i tokenom
+  // ako je noramlni onda ovo ostaje
   const handleToken = async (e) => {
     e.preventDefault();
     try {
       const response = await verifyToken(username, password, token);
       if (response.status === 200) {
         showMessage("success", "Wellcome.");
-       // dispatch(authState());
-       navigate("/forum_rooms")
+        dispatch(authState());
+        navigate("/forum_rooms");
       } else {
         setIsToken(false);
       }

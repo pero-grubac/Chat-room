@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-//import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../Redux/slices/userSlice";
 import { hadnleCreateComment, hadnleGetComments } from "../Error/ErrorMessage";
 import { createComment, getComments } from "../../Services/comments.service";
 import "./Comments.css";
 import { List, Input, Button } from "antd";
 import { SendOutlined, CloseOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const Comments = ({ onClose, idroom }) => {
- // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [message, setMessage] = useState("");
   const [comments, setComments] = useState([]);
   useEffect(() => {
@@ -18,19 +21,23 @@ const Comments = ({ onClose, idroom }) => {
         setComments(response.data);
       } catch (error) {
         hadnleGetComments(error);
-       // dispatch(logout());
+        dispatch(logout());
+        navigate("/login", { replace: true });
       }
     };
     getAllComments();
-  }, [ idroom]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idroom]);
 
   const handleCreateComment = async () => {
     try {
+      console.log(message + " " + message.length + " " + idroom);
       await createComment(message, idroom);
     } catch (error) {
       console.log(error);
       hadnleCreateComment(error);
-     // dispatch(logout());
+      dispatch(logout());
+      navigate("/login", { replace: true });
     }
     setMessage("");
   };

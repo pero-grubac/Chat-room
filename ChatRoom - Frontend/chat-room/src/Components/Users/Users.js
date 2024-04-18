@@ -1,27 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { logout } from "../Redux/slices/userSlice";
-//import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SettingOutlined } from "@ant-design/icons";
-import { Space, Table, Modal, Button } from "antd";
+import { Space, Table,  Button } from "antd";
 import {
   UserAddOutlined,
   MailOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { getApprovedUser, getUsers } from "../../Services/user.service";
+import { getApprovedUser } from "../../Services/user.service";
 import { handleGetAllUsers } from "../Error/ErrorMessage";
 import "./Users.css";
-import { redirect, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import UserPop from "./UserPop";
 import RequestedUser from "./RequestedUsers";
-import RequestedComments from "../Comments/RequestedComments";
 const roleMap = {
   ROLE_ADMIN: "ADMIN",
   ROLE_MODERATOR: "MODERATOR",
   ROLE_KORISNIK: "KORISNIK",
 };
 const Users = () => {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [usersUpdated, setUsersUpdated] = useState(false);
   const tableContainerRef = useRef(null);
@@ -103,11 +102,13 @@ const Users = () => {
       } catch (error) {
         console.log(error);
         handleGetAllUsers(error);
-        /// dispatch(logout());
+        dispatch(logout());
+        navigate("/login");
       }
     };
 
     getAllComments();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersUpdated]);
   useEffect(() => {
     function resizeHandler() {
@@ -145,7 +146,7 @@ const Users = () => {
   };
   const handleLogout = async () => {
     try {
-      //dispatch(logout());
+      dispatch(logout());
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);

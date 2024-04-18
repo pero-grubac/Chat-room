@@ -9,6 +9,7 @@ import org.unibl.etfbl.ChatRoom.exceptions.EmailException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.AuthRequest;
 import org.unibl.etfbl.ChatRoom.models.dtos.AuthResponse;
+import org.unibl.etfbl.ChatRoom.models.dtos.OAuthTokenRequest;
 import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
 import org.unibl.etfbl.ChatRoom.security.jwt.JwtService;
 import org.unibl.etfbl.ChatRoom.services.EmailService;
@@ -59,5 +60,9 @@ public class AuthenticationService {
             throw new ConflictException("User with username " + user.getUsername() + " doesn't have two factor token.");
         }
 
+    }
+
+    public AuthResponse verifyOAuthToken(OAuthTokenRequest request) {
+        return null;
     }
 }

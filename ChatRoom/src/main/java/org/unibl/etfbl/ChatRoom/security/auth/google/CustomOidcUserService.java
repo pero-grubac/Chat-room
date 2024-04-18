@@ -55,7 +55,7 @@ public class CustomOidcUserService extends OidcUserService {
 
     private OidcUser processOidcUser(OidcUserRequest userRequest, OidcUser oidcUser) {
         GoogleUserInfo googleUserInfo = new GoogleUserInfo(oidcUser.getAttributes());
-System.out.println(oidcUser.getAttributes());
+        System.out.println(oidcUser.getAttributes());
         Optional<UserEntity> userOptional = userRepository.findByEmail(googleUserInfo.getEmail());
         if (!userOptional.isPresent()) {
             UserEntity user = new UserEntity();

@@ -26,11 +26,15 @@ export const verifyToken = async (username, password, token) => {
 };
 
 export const register = async (username, password, email) => {
-  const response = await instance.post("/add", {
+  const response = await instance.post("/users/add", {
     username,
     password,
     email,
   });
+  return response;
+};
+export const oauth = async (oiduser) => {
+  const response = await instance.post("/auth/oauth", oiduser);
   return response;
 };
 
@@ -40,4 +44,5 @@ export default {
   logout,
   verifyToken,
   register,
+  oauth,
 };

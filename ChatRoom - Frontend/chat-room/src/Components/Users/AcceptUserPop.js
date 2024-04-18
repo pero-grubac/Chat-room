@@ -2,14 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Radio, Form, Button, Modal, Checkbox } from "antd";
 import "./Users.css";
 import { logout } from "../Redux/slices/userSlice";
-import { approveUser, changeRole } from "../../Services/user.service";
-import {
-  handleApproveUser,
-  handleChangeRole,
-  handleGetForumRooms,
-} from "../Error/ErrorMessage";
-import { redirect, useNavigate } from "react-router-dom";
+import { approveUser } from "../../Services/user.service";
+import { handleChangeRole, handleGetForumRooms } from "../Error/ErrorMessage";
+import { useNavigate } from "react-router-dom";
 import { getForumRooms } from "../../Services/forumRooms.Service";
+import { useDispatch } from "react-redux";
 
 const { Item } = Form;
 const { confirm } = Modal;
@@ -26,6 +23,7 @@ const AcceptUserPop = ({ onClose, idUser }) => {
   const [showModeratorOptions, setShowModeratorOptions] = useState(false);
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchForumRooms = async () => {
@@ -35,19 +33,21 @@ const AcceptUserPop = ({ onClose, idUser }) => {
       } catch (error) {
         console.log(error);
         handleGetForumRooms(error);
-        // dispatch(logout());
-        navigate("/login");
+        dispatch(logout());
+        navigate("/login", { replace: true });
       }
     };
     //   dispatch(authState());
     fetchForumRooms();
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const handleClose = () => {
     onClose();
   };
   const verifyData = () => {
     if (selectedRole === "ROLE_KORISNIK") setCheckedValues([]);
-    if (selectedRole === "ROLE_ADMIN") setCheckedValues(["ADD", "DELETE", "UPDATE"]);
+    if (selectedRole === "ROLE_ADMIN")
+      setCheckedValues(["ADD", "DELETE", "UPDATE"]);
     if (selectedRole === "ROLE_MODERATOR" && checkedValues.length === 0)
       return false;
     if (rooms.length === 0) return false;
@@ -94,13 +94,14 @@ const AcceptUserPop = ({ onClose, idUser }) => {
       onOk: async () => {
         try {
           if (verifyData() && isRoomExists()) {
-            console.log(user);
-            //  await approveUser(user);
+            //  console.log(user);
+            await approveUser(user);
           }
         } catch (error) {
           console.log(error);
           handleChangeRole(error);
-          //   dispatch(logout());
+          dispatch(logout());
+          navigate("/login", { replace: true });
         }
       },
       onClose,

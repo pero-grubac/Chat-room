@@ -4,6 +4,10 @@ import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import { approveUser, requests } from "../../Services/user.service";
 import { handleGetRequests } from "../Error/ErrorMessage";
 import AcceptUserPop from "./AcceptUserPop";
+import { useDispatch } from "react-redux";
+import {  useNavigate } from "react-router-dom";
+import { logout } from "../Redux/slices/userSlice";
+
 const { confirm } = Modal;
 
 const RequestedUser = ({ onClose }) => {
@@ -50,6 +54,9 @@ const RequestedUser = ({ onClose }) => {
       width: 100,
     },
   ];
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const tableContainerRef = useRef(null);
   const [requestsUpdated, setRequestsUpdated] = useState(false);
@@ -68,10 +75,12 @@ const RequestedUser = ({ onClose }) => {
       } catch (error) {
         console.log(error);
         handleGetRequests(error);
-        // dispatch(logout());
+        dispatch(logout());
+        navigate("/login", { replace: true });
       }
     };
     getAllRequests();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestsUpdated]);
   useEffect(() => {
     function resizeHandler() {
@@ -107,7 +116,8 @@ const RequestedUser = ({ onClose }) => {
           setRequestsUpdated(!requestsUpdated);
         } catch (error) {
           console.log(error);
-          //dispatch(logout());
+          dispatch(logout());
+          navigate("/login", { replace: true });
         }
       },
       onCancel() {},

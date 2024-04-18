@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Radio, Form, Button, Modal, Checkbox } from "antd";
 import "./Users.css";
-//import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../Redux/slices/userSlice";
 import { changeRole } from "../../Services/user.service";
 import { handleChangeRole } from "../Error/ErrorMessage";
+import {  useNavigate } from "react-router-dom";
 
 const { Item } = Form;
 const { confirm } = Modal;
@@ -17,7 +18,8 @@ const UserPop = ({ onClose, role, permissions, id, lblBtn }) => {
   const [showModeratorOptions, setShowModeratorOptions] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [checkedValues, setCheckedValues] = useState([]);
-  // const dispatch = useDispatch();
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
 
   useEffect(() => {
     setSelectedRole(role);
@@ -94,7 +96,8 @@ const UserPop = ({ onClose, role, permissions, id, lblBtn }) => {
         } catch (error) {
           console.log(error);
           handleChangeRole(error);
-          //   dispatch(logout());
+          dispatch(logout());
+          navigate("/login", { replace: true });
         }
       },
       onClose,
