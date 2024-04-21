@@ -9,10 +9,10 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each archived file, size max 5KB -->
-            <maxFileSize>5KB</maxFileSize>
+            <maxFileSize>5MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20KB,
                 it will delete old archived file -->
-            <totalSizeCap>20KB</totalSizeCap>
+            <totalSizeCap>50MB</totalSizeCap>
             <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
         </rollingPolicy>
