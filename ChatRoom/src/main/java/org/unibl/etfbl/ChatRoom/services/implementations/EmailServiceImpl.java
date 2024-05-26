@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(receiver);
             helper.setSubject(subject);
             helper.setText(content);
-             javaMailSender.send(message);
+           //  javaMailSender.send(message);
             System.out.println("\"token\":\"" + content + "\"");
         } catch (Exception e) {
             throw new EmailException(username, receiver);

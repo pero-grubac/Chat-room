@@ -7,7 +7,7 @@ public enum BannedWordsEnum {
     USERNAME("anonymousUser"),
     // SQL
     SELECT("select"),
-   // DELETE("delete"),
+    DELETE("delete"),
     DROP("drop"),
     INSERT("insert"),
     UPDATE("update"),
@@ -52,7 +52,7 @@ public enum BannedWordsEnum {
     PATH_ADMIN("/admin/"),
     PATH_AUTH("/auth/"),
     PATH_COMMENT("/comments/"),
-    PATH_FORUM_ROOM("/forumrooms/"),
+    PATH_FORUM_ROOM("/forum_rooms/"),
     PATH_USER("/users/"),
 
 
