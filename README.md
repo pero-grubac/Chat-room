@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h1>💬 Chat Room</h1>
+    <h1 align="center">💬 Chat Room</h1>
+
+  <p align="center">
+    <img src="https://img.shields.io/badge/React-Frontend-blue?logo=react" />
+    <img src="https://img.shields.io/badge/Redux-State_Management-764abc?logo=redux&logoColor=white" />
+    <img src="https://img.shields.io/badge/Spring_Boot-Backend-success?logo=springboot" />
+    <img src="https://img.shields.io/badge/MySQL-Database-blue?logo=mysql" />
+    <img src="https://img.shields.io/badge/REST_API-Available-brightgreen?logo=spring" />
+    <img src="https://img.shields.io/badge/Spring_Security-Enabled-darkgreen?logo=springsecurity" />
+    <img src="https://img.shields.io/badge/WAF-Protected-orange?logo=firewall" />
+  </p>
     <p>
         This project is an internet forum where registered users can exchange opinions on various topics. The forum supports the following categories: Science, Culture, Sports, and Music.
     </p>
