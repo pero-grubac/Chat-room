@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  # ─── MySQL database ────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: chatroom-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./ddl.sql:/docker-entrypoint-initdb.d/01-ddl.sql:ro
+      - ./seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${MYSQL_ROOT_PASSWORD}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ─── Spring Boot backend ───────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./ChatRoom
+      dockerfile: Dockerfile
+      args:
+        SSL_KEY_STORE_PASSWORD: ${SSL_KEY_STORE_PASSWORD}
+        SSL_KEY_PASSWORD: ${SSL_KEY_PASSWORD}
+    container_name: chatroom-backend
+    restart: unless-stopped
+    ports:
+      - "8443:8443"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_ALIAS: ${SSL_KEY_ALIAS}
+      SERVER_SSL_KEY_STORE: classpath:certs/keystore.p12
+      SERVER_SSL_KEY_STORE_TYPE: PKCS12
+      SERVER_SSL_KEY_PASSWORD: ${SSL_KEY_PASSWORD}
+      SERVER_SSL_KEY_STORE_PASSWORD: ${SSL_KEY_STORE_PASSWORD}
+      TOKEN_SIGNING_KEY: ${JWT_SIGNING_KEY}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      FRONTEND_URL: https://localhost
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ─── React frontend + Nginx SSL proxy ─────────────────────────────────────
+  frontend:
+    build:
+      context: ./ChatRoom - Frontend
+      dockerfile: Dockerfile
+    container_name: chatroom-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80" # HTTP → redirect to HTTPS
+      - "443:443" # HTTPS → React SPA + proxy to backend
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+    name: chatroom_mysql_data

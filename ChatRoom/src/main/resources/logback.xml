@@ -33,8 +33,12 @@
     <!-- Define loggers and their levels -->
     <logger name="org.unibl.etfbl.ChatRoom" level="trace" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
 
 
 </configuration>
