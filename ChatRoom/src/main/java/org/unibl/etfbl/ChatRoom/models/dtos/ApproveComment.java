@@ -1,8 +1,6 @@
 package org.unibl.etfbl.ChatRoom.models.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
 
 @Data
 public class ApproveComment {
@@ -17,5 +15,6 @@ public class ApproveComment {
     @JsonProperty("isApproved")
     public boolean isApproved() {
         return isApproved;
-    }*/
+    }
+    */
 }

@@ -1,10 +1,7 @@
 package org.unibl.etfbl.ChatRoom.models.dtos;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
-
-import java.sql.Timestamp;
 
 @Data
 public class CommentInput {

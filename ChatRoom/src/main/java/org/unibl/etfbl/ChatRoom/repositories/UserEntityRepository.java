@@ -12,12 +12,16 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Integer>
     Boolean existsByUsername(String username);
 
     Boolean existsByIdUser(Integer idUser);
+
     Boolean existsByEmail(String email);
 
     Optional<UserEntity> getUserEntityByUsername(String username);
 
     Optional<UserEntity> getUserEntityByEmail(String email);
+
     Optional<UserEntity> findByEmail(String email);
+
     List<UserEntity> getAllByIsApproved(Byte isApproved);
+
     List<UserEntity> getAllByRooms_IdForumRoom(Integer id);
 }

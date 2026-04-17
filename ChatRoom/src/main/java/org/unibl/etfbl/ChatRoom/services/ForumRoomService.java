@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ForumRoomService {
     List<ForumRoom> getAllForumRooms();
+
     ForumRoom getForumRoom(Integer id) throws NotFoundException;
 
     ForumRoom createForumRoom(ForumRoom forumRoom) throws ConflictException;

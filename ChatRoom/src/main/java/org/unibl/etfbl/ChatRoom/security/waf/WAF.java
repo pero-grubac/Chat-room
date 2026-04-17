@@ -1,13 +1,13 @@
 package org.unibl.etfbl.ChatRoom.security.waf;
 
 
+import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.unibl.etfbl.ChatRoom.advices.ExceptionLoggingAdvice;
 import org.unibl.etfbl.ChatRoom.enums.BannedWordsEnum;
-import jakarta.validation.ConstraintValidator;
 import org.unibl.etfbl.ChatRoom.enums.ParameterLengthEnum;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.services.UserService;
@@ -15,9 +15,9 @@ import org.unibl.etfbl.ChatRoom.services.UserService;
 import java.util.regex.Pattern;
 
 public class WAF implements ConstraintValidator<BannedWordsConstraint, String> {
+    private static final int MAX_LENGTH = 255;
     @Autowired
     private UserService userService;
-    private static final int MAX_LENGTH = 255;
     private String paramName;
     @Autowired
     private ExceptionLoggingAdvice exceptionLoggingAdvice;

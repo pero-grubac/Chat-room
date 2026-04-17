@@ -3,10 +3,7 @@ package org.unibl.etfbl.ChatRoom.models.dtos;
 import lombok.Builder;
 import lombok.Data;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
-import org.unibl.etfbl.ChatRoom.models.entities.PermissionEntity;
 import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
-
-import java.util.List;
 
 @Data
 @Builder

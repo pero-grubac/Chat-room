@@ -1,20 +1,21 @@
 package org.unibl.etfbl.ChatRoom.security.jwt;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import java.security.Key;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -39,13 +40,14 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
+
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         if (userDetails instanceof UserEntity user) {
             extraClaims.put("role", user.getRole().toString());
             extraClaims.put("permissions",
                     user.getPermissions().stream()
-                    .map(permission -> permission.getPermission().name())
-                    .collect(Collectors.toList()));
+                            .map(permission -> permission.getPermission().name())
+                            .collect(Collectors.toList()));
 
         }
         return Jwts.builder().setClaims(extraClaims)

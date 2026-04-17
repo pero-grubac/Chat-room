@@ -2,7 +2,10 @@ package org.unibl.etfbl.ChatRoom.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class ForumRoomEntity {
     @Column(name = "IdForumRoom", nullable = false)
     private Integer idForumRoom;
     @Basic
-    @Column(name = "Name", nullable = false, length = 45,unique = true)
+    @Column(name = "Name", nullable = false, length = 45, unique = true)
     private String name;
     @OneToMany(mappedBy = "forumRoom")
     @JsonIgnore

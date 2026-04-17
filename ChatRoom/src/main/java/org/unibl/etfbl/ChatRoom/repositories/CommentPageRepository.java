@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.unibl.etfbl.ChatRoom.models.entities.CommentEntity;
 
 @Repository
-public interface CommentPageRepository  extends PagingAndSortingRepository<CommentEntity,Integer> {
+public interface CommentPageRepository extends PagingAndSortingRepository<CommentEntity, Integer> {
     Page<CommentEntity> findAllByForumRoom_IdForumRoomAndIsAllowedOrderByCreatedAtDesc(Integer idForumRoom, Byte isAllowed, Pageable pageable);
 
 }

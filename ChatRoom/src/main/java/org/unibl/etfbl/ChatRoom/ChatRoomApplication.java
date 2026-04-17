@@ -8,16 +8,16 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class ChatRoomApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ChatRoomApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ChatRoomApplication.class, args);
+    }
 
-	@Bean
-	public ModelMapper modelMapper(){
-		ModelMapper mapper = new ModelMapper();
-		// Ako ne zna da mapira neka preskoči
-		mapper.getConfiguration().setAmbiguityIgnored(true);
-		return  mapper;
-	}
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        // Ako ne zna da mapira neka preskoči
+        mapper.getConfiguration().setAmbiguityIgnored(true);
+        return mapper;
+    }
 
 }

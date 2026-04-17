@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface LoggerService {
     List<LoggerEntity> getAllByType(ActionEnum actionEnum);
+
     void saveLogger(LoggerEntity logger);
 }

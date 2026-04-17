@@ -1,7 +1,5 @@
 package org.unibl.etfbl.ChatRoom.services;
 
-import org.unibl.etfbl.ChatRoom.enums.PermissionEnum;
-import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.ApproveUser;
@@ -30,8 +28,11 @@ public interface UserService {
     void changeRole(ChangeRole changeRole) throws NotFoundException, ConflictException;
 
     UserOutput findByEmail(String email) throws NotFoundException;
+
     UserEntity findByUsername(String username) throws NotFoundException;
+
     void save(UserEntity userEntity);
+
     void deleteJWT(String username);
 
 }

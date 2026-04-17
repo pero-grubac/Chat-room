@@ -10,13 +10,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
     @Value("${frontend.url}")
     private String frontendUrl;
+
     @Bean
     public WebMvcConfigurer crossConfigure() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(frontendUrl) .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedOrigins(frontendUrl).allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
     }

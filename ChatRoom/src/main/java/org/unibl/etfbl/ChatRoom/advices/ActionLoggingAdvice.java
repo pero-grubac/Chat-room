@@ -7,26 +7,23 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.unibl.etfbl.ChatRoom.enums.ActionEnum;
-import org.unibl.etfbl.ChatRoom.models.entities.LoggerEntity;
+import org.springframework.stereotype.Component;
 import org.unibl.etfbl.ChatRoom.services.LoggerService;
 
 @Aspect
 @Component
 public class ActionLoggingAdvice {
     Logger log = LoggerFactory.getLogger(ActionLoggingAdvice.class);
+    @Autowired
+    private LoggerService service;
 
     //    @Pointcut("execution(* org.unibl.etfbl.ChatRoom.controllers.*.*(..))")
     @Pointcut(value = "execution(* org.unibl.etfbl.ChatRoom.*.*.*(..) )")
     public void myPointcut() {
 
     }
-
-    @Autowired
-    private LoggerService service;
 
     @Around("myPointcut()")
     public Object applicationLogger(ProceedingJoinPoint pjp) throws Throwable {

@@ -19,6 +19,7 @@ public class LoggerServiceImpl implements LoggerService {
     private LoggerEntityRepository repository;
     @PersistenceContext
     private EntityManager entityManager;
+
     @Override
     public List<LoggerEntity> getAllByType(ActionEnum actionEnum) {
         return null;

@@ -11,14 +11,16 @@ import org.unibl.etfbl.ChatRoom.enums.PermissionEnum;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
-import org.unibl.etfbl.ChatRoom.models.dtos.*;
+import org.unibl.etfbl.ChatRoom.models.dtos.ApproveUser;
+import org.unibl.etfbl.ChatRoom.models.dtos.ChangeRole;
+import org.unibl.etfbl.ChatRoom.models.dtos.UserInput;
+import org.unibl.etfbl.ChatRoom.models.dtos.UserOutput;
 import org.unibl.etfbl.ChatRoom.models.entities.ForumRoomEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.PermissionEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 import org.unibl.etfbl.ChatRoom.repositories.ForumRoomEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
 import org.unibl.etfbl.ChatRoom.services.EmailService;
-import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 import org.unibl.etfbl.ChatRoom.services.PermissionService;
 import org.unibl.etfbl.ChatRoom.services.UserService;
 

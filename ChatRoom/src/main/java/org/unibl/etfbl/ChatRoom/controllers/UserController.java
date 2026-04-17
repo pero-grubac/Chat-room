@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.unibl.etfbl.ChatRoom.advices.ExceptionLoggingAdvice;
@@ -15,10 +13,8 @@ import org.unibl.etfbl.ChatRoom.models.dtos.ApproveUser;
 import org.unibl.etfbl.ChatRoom.models.dtos.ChangeRole;
 import org.unibl.etfbl.ChatRoom.models.dtos.UserInput;
 import org.unibl.etfbl.ChatRoom.models.dtos.UserOutput;
-import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 import org.unibl.etfbl.ChatRoom.services.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

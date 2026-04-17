@@ -31,7 +31,8 @@ public class UserInfoService implements UserDetailsService {
     public Optional<UserEntity> loadUserByEmail(String email) {
         return userEntityRepository.findByEmail(email);
     }
-    public Boolean existsByUsername(String username){
+
+    public Boolean existsByUsername(String username) {
         return userEntityRepository.existsByUsername(username);
     }
 

@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.unibl.etfbl.ChatRoom.enums.ActionEnum;
-import org.unibl.etfbl.ChatRoom.models.entities.LoggerEntity;
 import org.unibl.etfbl.ChatRoom.services.LoggerService;
 
 @Aspect
@@ -19,6 +17,7 @@ public class ExceptionLoggingAdvice {
     private static final Logger log = LoggerFactory.getLogger(ExceptionLoggingAdvice.class);
     @Autowired
     private LoggerService service;
+
     @Pointcut("execution(* org.unibl.etfbl.ChatRoom.*.*.*(..))")
     public void applicationMethod() {
         // Pointcut definition for methods in the specified package

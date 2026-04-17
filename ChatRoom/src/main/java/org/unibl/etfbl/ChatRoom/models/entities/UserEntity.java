@@ -2,14 +2,13 @@ package org.unibl.etfbl.ChatRoom.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.unibl.etfbl.ChatRoom.enums.RegristrationSourceEnum;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 
@@ -21,7 +20,7 @@ import java.util.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class UserEntity implements UserDetails{
+public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "IdUser", nullable = false)
@@ -44,7 +43,7 @@ public class UserEntity implements UserDetails{
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CommentEntity> comments;
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<PermissionEntity> permissions;
     @Enumerated(EnumType.STRING)
     @Column(name = "Role", nullable = true)
@@ -63,6 +62,7 @@ public class UserEntity implements UserDetails{
             inverseJoinColumns = @JoinColumn(name = "IdForumRoom", referencedColumnName = "IdForumRoom")
     )
     private Set<ForumRoomEntity> rooms = new HashSet<>();
+
     @Override
     public String getPassword() {
         return password;
@@ -72,7 +72,6 @@ public class UserEntity implements UserDetails{
     public String getUsername() {
         return username;
     }
-
 
 
     @Override

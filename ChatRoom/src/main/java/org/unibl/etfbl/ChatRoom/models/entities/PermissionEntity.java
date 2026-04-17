@@ -2,10 +2,9 @@ package org.unibl.etfbl.ChatRoom.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.unibl.etfbl.ChatRoom.enums.PermissionEnum;
-
-import java.util.Objects;
 
 @Data
 @Entity

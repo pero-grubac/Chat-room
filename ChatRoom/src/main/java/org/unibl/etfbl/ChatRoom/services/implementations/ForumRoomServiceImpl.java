@@ -15,7 +15,6 @@ import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 import org.unibl.etfbl.ChatRoom.repositories.CommentEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.ForumRoomEntityRepository;
 import org.unibl.etfbl.ChatRoom.repositories.UserEntityRepository;
-import org.unibl.etfbl.ChatRoom.services.CommentService;
 import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 
 import java.util.Comparator;
@@ -88,9 +87,9 @@ public class ForumRoomServiceImpl implements ForumRoomService {
             for (CommentEntity c : comments)
                 commentEntityRepository.deleteById(c.getIdComment());
             List<UserEntity> users = userEntityRepository.getAllByRooms_IdForumRoom(idForumRoom);
-            for(UserEntity u : users){
+            for (UserEntity u : users) {
                 Set<ForumRoomEntity> rooms = u.getRooms();
-                rooms.removeIf(r->r.getIdForumRoom().equals(idForumRoom));
+                rooms.removeIf(r -> r.getIdForumRoom().equals(idForumRoom));
                 userEntityRepository.saveAndFlush(u);
             }
             repository.deleteById(idForumRoom);

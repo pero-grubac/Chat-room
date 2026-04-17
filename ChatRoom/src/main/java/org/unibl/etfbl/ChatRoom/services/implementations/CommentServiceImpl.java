@@ -5,15 +5,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentInput;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentOutput;
 import org.unibl.etfbl.ChatRoom.models.dtos.ForumRoom;
-import org.unibl.etfbl.ChatRoom.models.dtos.UserOutput;
 import org.unibl.etfbl.ChatRoom.models.entities.CommentEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.ForumRoomEntity;
 import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
@@ -22,8 +19,6 @@ import org.unibl.etfbl.ChatRoom.repositories.CommentPageRepository;
 import org.unibl.etfbl.ChatRoom.services.CommentService;
 import org.unibl.etfbl.ChatRoom.services.ForumRoomService;
 import org.unibl.etfbl.ChatRoom.services.UserService;
-
-import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.time.Instant;

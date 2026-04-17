@@ -2,26 +2,16 @@ package org.unibl.etfbl.ChatRoom.controllers;
 
 
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.result.view.RedirectView;
 import org.unibl.etfbl.ChatRoom.advices.ExceptionLoggingAdvice;
 import org.unibl.etfbl.ChatRoom.models.dtos.AuthRequest;
 import org.unibl.etfbl.ChatRoom.models.dtos.OAuthTokenRequest;
 import org.unibl.etfbl.ChatRoom.security.auth.AuthenticationService;
 import org.unibl.etfbl.ChatRoom.security.auth.google.GoogleService;
-import org.unibl.etfbl.ChatRoom.security.auth.google.GoogleUserInfo;
 
 import java.util.Map;
 
