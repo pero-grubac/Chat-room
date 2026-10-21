@@ -1,0 +1,4 @@
+# Scripts run inside Linux containers and CI: always LF, whatever the checkout platform
+*.sh text eol=lf
+mvnw text eol=lf
+*.cmd text eol=crlf
