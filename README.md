@@ -289,6 +289,74 @@ Backend settings with defaults in `application.properties`, each overridable as 
 
 ---
 
+## 🧑‍💻 Usage
+
+Open **https://localhost** (or http://localhost:3000 in local development). The 2FA codes arrive in the Mailpit inbox at **http://localhost:8025**.
+
+### As a new user
+
+1. On the login page choose **Register**, then enter a username, an email and a password (8 to 72 characters with upper and lower case letters, a digit and a special character).
+2. The account now waits for an administrator. You get an email when it is approved or rejected.
+3. **Sign in** with your username and password, then enter the code from the email and choose **Login with Token**. The code is valid for 5 minutes and works once.
+
+**Sign in with Google** works the same way: the first time it registers a pending account, afterwards it emails a code for the second step.
+
+### In the forum (every role)
+
+| To | Do this |
+|----|---------|
+| Read a room | Click ✉️ on the room card: the latest 20 published comments with author and time |
+| Write a comment | Type it in the box at the bottom (up to 100 characters) and press **Send** or Enter. It appears once a moderator publishes it |
+| Sign out | The ⏻ button on the left |
+
+### As a moderator
+
+Your rooms show an extra 📝 **Moderation queue** button. In the queue, each pending comment has the actions your permissions allow:
+
+| Action | Permission | Result |
+|--------|------------|--------|
+| ✔️ Publish | `ADD` | The comment becomes visible in the room |
+| 🚫 Forbid | `ADD` | The comment leaves the queue and is never shown |
+| ✏️ Adjust | `UPDATE` | Edit the text before publishing; author and date stay the same |
+| ✖️ Delete | `DELETE` | The comment is removed |
+
+### As an administrator
+
+Open **user management** with the 👤 button on the forum page.
+
+| To | Do this |
+|----|---------|
+| Approve or reject a registration | 👤➕ **Registration requests**, then ✔️ to approve with a role (and, for a moderator, permissions and rooms) or ✖️ to reject |
+| Change role, permissions or rooms | ⚙️ on the user's row |
+| Block or restore access | 🚫 blocks the account and signs it out at once; ✅ restores it with the same role |
+| Read the security log | 🛡️ **Security log**: all SIEM events, filterable by type |
+| Create, rename or delete a room | ➕ **New room** card, or ⚙️ / 🗑️ on a room card in the forum |
+
+### Using the API directly
+
+Every endpoint is under `/api` (see the [permission matrix](#-permission-matrix)). Sign in once and keep the session cookie in a cookie jar:
+
+```bash
+# 1. password step: emails a code
+curl -k -c jar -b jar -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"admin123"}' https://localhost/api/auth/login
+
+# 2. code step: sets the session cookie
+curl -k -c jar -b jar -H 'Content-Type: application/json' \
+  -d '{"username":"admin","password":"admin123","token":"<code from Mailpit>"}' https://localhost/api/auth/token
+
+# 3. any call with the cookie
+curl -k -b jar https://localhost/api/forumrooms
+curl -k -b jar "https://localhost/api/security-events?type=LOGIN_FAILED"
+
+# 4. sign out
+curl -k -b jar -X POST https://localhost/api/auth/logout
+```
+
+Errors come back as problem JSON, for example `{"status":403,"title":"Forbidden","detail":"Access denied"}`.
+
+---
+
 ## 🔏 Certificate Controller
 
 `certificates/` is a small OpenSSL certificate authority that runs as a one-shot container before the others start. It keeps its private key in its own volume, gives every component only its own certificate and key, and publishes the CA certificate, a CRL and a Java truststore next to them.
