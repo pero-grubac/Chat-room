@@ -1,5 +1,5 @@
 import base from "./baseService";
-const instance = base.service(true);
+const instance = base.service();
 
 export const getForumRooms = async () => {
   const response = await instance.get("/forumrooms");
@@ -16,20 +16,7 @@ export const deleteForumRoom = async (id) => {
   return response;
 };
 
-export const getForumRoom = async (id) => {
-  const response = await instance.get(`/forumrooms/${id}`);
-  return response;
-};
 export const createForumRoom = async (name) => {
   const response = await instance.post("/forumrooms/create", { name });
   return response;
-};
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  getForumRooms,
-  updateForumRoom,
-  deleteForumRoom,
-  getForumRoom,
-  createForumRoom,
 };

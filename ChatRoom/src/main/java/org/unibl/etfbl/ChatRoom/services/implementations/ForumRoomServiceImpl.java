@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.unibl.etfbl.ChatRoom.exceptions.BadRequestException;
 import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.ForumRoom;
@@ -58,6 +59,8 @@ public class ForumRoomServiceImpl implements ForumRoomService {
             throw new ConflictException("Forum room with name: " + forumRoom.getName() + " already exists.");
         } else {
             ForumRoomEntity forumRoomEntity = modelMapper.map(forumRoom, ForumRoomEntity.class);
+            // A new room never takes the id of an existing one
+            forumRoomEntity.setIdForumRoom(null);
             repository.saveAndFlush(forumRoomEntity);
             entityManager.refresh(forumRoomEntity);
             return modelMapper.map(forumRoomEntity, ForumRoom.class);
@@ -66,12 +69,19 @@ public class ForumRoomServiceImpl implements ForumRoomService {
 
     @Override
     public void updateForumRoom(ForumRoom forumRoom) throws ConflictException {
+        if (forumRoom.getId() == null) {
+            throw new BadRequestException("The room id is missing");
+        }
+        ForumRoomEntity forumRoomEntity = repository.findById(forumRoom.getId()).orElseThrow(
+                () -> new NotFoundException("Forum room with ID " + forumRoom.getId() + " not found")
+        );
+        // Saving the current name again is not a conflict with itself
+        if (forumRoomEntity.getName().equals(forumRoom.getName())) {
+            return;
+        }
         if (repository.existsByName(forumRoom.getName())) {
             throw new ConflictException("Forum room with name: " + forumRoom.getName() + " already exists.");
         } else {
-            ForumRoomEntity forumRoomEntity = repository.findById(forumRoom.getId()).orElseThrow(
-                    () -> new NotFoundException("Forum room with ID " + forumRoom.getId() + " not found")
-            );
             forumRoomEntity.setName(forumRoom.getName());
             repository.saveAndFlush(forumRoomEntity);
             entityManager.refresh(forumRoomEntity);

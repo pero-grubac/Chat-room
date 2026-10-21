@@ -21,34 +21,6 @@
   width: 100%;
   display: "flex";
 }
-.UserPopModal {
-  width: 400px; /* Adjust width as needed */
-  max-width: 100%;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.UserPopForm {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.UserPopFormItem {
-  margin-bottom: 10px;
-}
-
-.UserPopButtons {
-  display: flex;
-  justify-content: center; /* Align buttons to the center */
-  margin-top: 20px;
-}
-
-.UserPopButtons button {
-  margin: 0 5px; /* Add margin between buttons */
-}
 
 .requests-button-top {
   top: 10px;
@@ -74,9 +46,6 @@
   align-items: center;
   width: 50px;
   height: 50px;
-}
-.button-logout {
-  bottom: 15px;
 }
 .requested-user-container {
   position: absolute;

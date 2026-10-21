@@ -6,20 +6,16 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.unibl.etfbl.ChatRoom.services.LoggerService;
 
+/** Application log: who called which controller or service method. Security events go to the SIEM instead. */
 @Aspect
 @Component
 public class ActionLoggingAdvice {
-    Logger log = LoggerFactory.getLogger(ActionLoggingAdvice.class);
-    @Autowired
-    private LoggerService service;
+    private static final Logger log = LoggerFactory.getLogger(ActionLoggingAdvice.class);
 
-    //    @Pointcut("execution(* org.unibl.etfbl.ChatRoom.controllers.*.*(..))")
     @Pointcut(value = "execution(* org.unibl.etfbl.ChatRoom.*.*.*(..) )")
     public void myPointcut() {
 
@@ -29,22 +25,8 @@ public class ActionLoggingAdvice {
     public Object applicationLogger(ProceedingJoinPoint pjp) throws Throwable {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "anonymousUser";
-
-        // Log method invocation
-        String methodName = pjp.getSignature().getName();
-        String className = pjp.getTarget().getClass().toString();
-        Object[] array = pjp.getArgs();
-        // PROVJERI stvari argumenata
-        Object result;
-        String message = String.format("Method invoked username <%s>: classname <%s> method <%s()>", username, className, methodName);
-        log.info(message);
-        result = pjp.proceed();
-       /* LoggerEntity logger = new LoggerEntity();
-        logger.setActionType(ActionEnum.ACTION);
-        logger.setMessage(message);
-        service.saveLogger(logger);*/
-        return result;
+        log.info("Method invoked username <{}>: classname <{}> method <{}()>",
+                username, pjp.getTarget().getClass(), pjp.getSignature().getName());
+        return pjp.proceed();
     }
-
-
 }

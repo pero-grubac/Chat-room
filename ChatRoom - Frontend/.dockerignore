@@ -1,0 +1,4 @@
+node_modules/
+**/node_modules/
+chat-room/build/
+chat-room/coverage/

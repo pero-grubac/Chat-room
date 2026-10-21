@@ -1,6 +1,6 @@
 import base from "./baseService";
 
-const instance = base.service(true);
+const instance = base.service();
 
 export const getComments = async (id) => {
   const response = await instance.get(`/comments/${id}`);
@@ -40,14 +40,4 @@ export const updateComment = async (idComment, text, idForumRoom) => {
 export const deleteComment = async (id) => {
   const response = await instance.delete(`/comments/delete/${id}`);
   return response;
-};
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  getComments,
-  createComment,
-  approveComment,
-  getRequestedComments,
-  updateComment,
-  deleteComment,
 };

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.unibl.etfbl.ChatRoom.security.auth.google.CustomOidcUserService;
 import org.unibl.etfbl.ChatRoom.security.jwt.JwtAuthenticationFilter;
+import org.unibl.etfbl.ChatRoom.security.ratelimit.AuthRateLimitFilter;
 
 
 @Configuration
@@ -34,7 +33,11 @@ public class SecurityConfig {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    private CustomOidcUserService customOidcUserService;
+    private AuthRateLimitFilter authRateLimitFilter;
+
+    @Autowired
+    private JsonSecurityHandlers jsonSecurityHandlers;
+
 
 
     @Bean
@@ -44,36 +47,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        try {
-            http.csrf(AbstractHttpConfigurer::disable)
-                    //.csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
-
-                    .authorizeHttpRequests(auth -> {
-                        auth
-                                .requestMatchers("/auth/**", "/users/add").permitAll()
-                                .requestMatchers("/users/**", "/forumrooms/**", "/comments/**").authenticated();
-                    })
-
-                    .oauth2Login(oauth2 -> {
-                        oauth2
-                                .userInfoEndpoint(ui -> ui
-                                        .oidcUserService(customOidcUserService))
-                        ;
-
-                    })
-
-                    .oauth2Client(Customizer.withDefaults())
-
-                    /* .requiresChannel(ch ->{
-                         ch.requestMatchers("/**").requiresSecure();
-                     })*/
-                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authenticationProvider(authenticationProvider())
-                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            ;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        // CSRF tokens are not needed: the session cookie is SameSite=Strict, so other sites cannot send it
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/me").authenticated()
+                        .requestMatchers("/auth/**", "/users/add", "/error").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(jsonSecurityHandlers)
+                        .accessDeniedHandler(jsonSecurityHandlers))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

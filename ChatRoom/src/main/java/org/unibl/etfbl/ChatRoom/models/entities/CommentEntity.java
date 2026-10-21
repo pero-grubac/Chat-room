@@ -14,7 +14,7 @@ public class CommentEntity {
     @Column(name = "IdComment", nullable = false)
     private Integer idComment;
     @Basic
-    @Column(name = "Text", nullable = false, length = 45)
+    @Column(name = "Text", nullable = false, length = 100)
     private String text;
     @Basic
     @Column(name = "CreatedAt", nullable = false)

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 
 import java.security.Key;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,13 @@ public class JwtService {
 
     @Value("${token.signing.key}")
     private String jwtSigningKey;
+
+    @Value("${token.expiration:PT24H}")
+    private Duration expiration = Duration.ofHours(24);
+
+    public Duration getExpiration() {
+        return expiration;
+    }
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -53,7 +61,7 @@ public class JwtService {
         return Jwts.builder().setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration.toMillis()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 

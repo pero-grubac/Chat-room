@@ -15,5 +15,5 @@ public interface CommentEntityRepository extends JpaRepository<CommentEntity, In
 
     List<CommentEntity> findAllByForumRoom_IdForumRoom(Integer idForumRoom);
 
-    Boolean existsByIdComment(Integer idComment);
+    void deleteAllByUser_IdUser(Integer idUser);
 }

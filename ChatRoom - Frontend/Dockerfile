@@ -1,31 +1,21 @@
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Kopiraj iz chat-room subfolder
 COPY chat-room/package*.json ./
-RUN npm install
+RUN npm ci --no-audit --no-fund
 
 COPY chat-room/ .
 
-RUN echo '{ "baseServiceUrl": "", "REACT_APP_GOOGLE_API_TOKEN": "" }' \
-    > src/Enviroments/config.production.json
+# Optional: a deployment's own Google OAuth client (falls back to src/Enviroments/*.json)
+ARG VITE_GOOGLE_CLIENT_ID=
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
 
 RUN npm run build
 
 FROM nginx:alpine
 
-RUN apk add --no-cache openssl
-
-RUN mkdir -p /etc/nginx/certs && \
-    openssl req -x509 \
-      -nodes \
-      -days 3650 \
-      -newkey rsa:2048 \
-      -keyout /etc/nginx/certs/nginx.key \
-      -out    /etc/nginx/certs/nginx.crt \
-      -subj "/CN=localhost/O=ChatRoom/C=BA"
-
+# Certificate, key, CA and CRL come from the Certificate Controller, mounted at /etc/nginx/certs
 COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

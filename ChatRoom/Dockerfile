@@ -2,22 +2,13 @@ FROM maven:3.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-COPY . .
+# Dependencies first: this layer is reused until pom.xml changes
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
 
-RUN mkdir -p src/main/resources/certs && \
-    keytool -genkeypair \
-      -alias chatroom \
-      -keyalg RSA \
-      -keysize 2048 \
-      -storetype PKCS12 \
-      -keystore src/main/resources/certs/keystore.p12 \
-      -validity 3650 \
-      -storepass ${SSL_KEY_STORE_PASSWORD:-chatroom123} \
-      -keypass ${SSL_KEY_PASSWORD:-chatroom123} \
-      -dname "CN=localhost, OU=Dev, O=ChatRoom, L=BanjaLuka, S=RS, C=BA" \
-      -noprompt
-
-RUN mvn clean package -DskipTests
+COPY src ./src
+# Tests run in CI; the image only needs the jar
+RUN mvn -B -q package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:21-jre
 
@@ -25,6 +16,7 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
+# TLS certificate and key come from the Certificate Controller, mounted at /pki
 EXPOSE 8443
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

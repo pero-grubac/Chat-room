@@ -1,25 +1,23 @@
 package org.unibl.etfbl.ChatRoom.services;
 
-import org.unibl.etfbl.ChatRoom.exceptions.ConflictException;
 import org.unibl.etfbl.ChatRoom.exceptions.NotFoundException;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentInput;
 import org.unibl.etfbl.ChatRoom.models.dtos.CommentOutput;
-import org.unibl.etfbl.ChatRoom.models.entities.CommentEntity;
+import org.unibl.etfbl.ChatRoom.models.entities.UserEntity;
 
 import java.util.List;
 
+/** Comments; every moderation method checks that {@code moderator} may moderate the comment's room. */
 public interface CommentService {
     List<CommentOutput> getCommentsInForumRoom(Integer idForumRoom, Byte isAllowed);
 
-    List<CommentEntity> getCommentsByIdForumRoom(Integer idForumRoom);
+    List<CommentOutput> getRequestedComments(UserEntity moderator, Integer idForumRoom);
 
-    List<CommentOutput> getRequestedComments(Integer idForumRoom, Byte isAllowed);
+    void createComment(String username, CommentInput comment) throws NotFoundException;
 
-    void createComment(String username, CommentInput comment) throws NotFoundException, ConflictException;
+    void updateComment(UserEntity moderator, CommentInput comment) throws NotFoundException;
 
-    void updateComment(String username, CommentInput comment) throws NotFoundException, ConflictException;
+    void deleteComment(UserEntity moderator, Integer idComment) throws NotFoundException;
 
-    void deleteComment(Integer idComment);
-
-    void allowComment(Integer idComment, Byte isAllowed) throws NotFoundException, ConflictException;
+    void allowComment(UserEntity moderator, Integer idComment, Byte isAllowed) throws NotFoundException;
 }

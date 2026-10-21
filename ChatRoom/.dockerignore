@@ -1,0 +1,6 @@
+target/
+logs/
+.idea/
+.vscode/
+*.iml
+src/main/resources/certs/

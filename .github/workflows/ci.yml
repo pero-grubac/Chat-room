@@ -1,0 +1,186 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    # Documentation-only changes do not start CI at all
+    paths-ignore:
+      - "**.md"
+      - "images/**"
+      - "LICENSE.txt"
+      - "*.pdf"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "images/**"
+      - "LICENSE.txt"
+      - "*.pdf"
+  workflow_dispatch:
+
+# A newer push to the same branch or pull request cancels the run that is still going
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Decides which parts changed, so a frontend-only change skips the backend job and vice versa
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      stack: ${{ steps.filter.outputs.stack }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - "ChatRoom/**"
+              - ".github/workflows/ci.yml"
+            frontend:
+              - "ChatRoom - Frontend/**"
+              - ".github/workflows/ci.yml"
+            stack:
+              - "ChatRoom/**"
+              - "ChatRoom - Frontend/**"
+              - "certificates/**"
+              - "scripts/**"
+              - "docker-compose.yml"
+              - ".env.example"
+              - ".github/workflows/ci.yml"
+
+  backend:
+    name: Backend · build & test
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: ChatRoom
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (with the Maven repository cached)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build, run tests and measure coverage
+        run: |
+          chmod +x mvnw
+          ./mvnw -B verify
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: ChatRoom/target/site/jacoco/
+          if-no-files-found: ignore
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: ChatRoom/target/surefire-reports/
+
+  frontend:
+    name: Frontend · lint, test & build
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ChatRoom - Frontend/chat-room
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js (with the npm cache)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: ChatRoom - Frontend/chat-room/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Lint (warnings fail the build)
+        run: npm run lint
+
+      - name: Run tests with coverage
+        run: npm run test:ci
+
+      - name: Production build
+        run: npm run build
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: ChatRoom - Frontend/chat-room/coverage/
+          if-no-files-found: ignore
+
+  docker:
+    name: Docker · build & smoke test
+    needs: [changes, backend, frontend]
+    # Runs when the stack changed and nothing it depends on failed (a skipped job is fine)
+    if: >-
+      always() &&
+      (needs.changes.outputs.stack == 'true' || github.event_name == 'workflow_dispatch') &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          sed -i "s|^JWT_SIGNING_KEY=.*|JWT_SIGNING_KEY=$(openssl rand -base64 48 | tr -d '\n')|" .env
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Image layers are cached in GitHub Actions: unchanged layers (dependencies, base images) are not rebuilt
+      - name: Build images (with layer cache)
+        uses: docker/bake-action@v5
+        with:
+          files: docker-compose.yml
+          load: true
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
+
+      - name: Start the stack
+        run: docker compose up -d --no-build
+
+      # Full 2FA sign-in through Nginx, then TLS checks against the ChatRoom CA
+      - name: End-to-end smoke test
+        run: bash scripts/smoke-test.sh
+
+      - name: Print logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v

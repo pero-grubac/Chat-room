@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 import org.unibl.etfbl.ChatRoom.models.entities.PermissionEntity;
-import org.unibl.etfbl.ChatRoom.security.waf.BannedWordsConstraint;
 
 import java.util.List;
 
@@ -12,14 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 public class UserOutput {
     private Integer idUser;
-    @BannedWordsConstraint(paramName = "username")
     private String username;
-    @BannedWordsConstraint(paramName = "email")
     private String email;
-    @BannedWordsConstraint(paramName = "role")
     private RoleEnum role;
-    @BannedWordsConstraint(paramName = "permissions")
     private List<PermissionEntity> permissions;
-
-
+    /** null pending, 0 rejected or blocked, 1 approved */
+    private Byte isApproved;
+    private List<Integer> roomIds;
 }

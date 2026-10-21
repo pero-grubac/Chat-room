@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.unibl.etfbl.ChatRoom.enums.RegristrationSourceEnum;
 import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 
+import java.time.Instant;
 import java.util.*;
 
 @Data
@@ -32,6 +33,9 @@ public class UserEntity implements UserDetails {
     @Column(name = "TwoFactorToken", nullable = true, length = 255, unique = true)
     private String twoFactorToken;
     @Basic
+    @Column(name = "TwoFactorTokenExpiresAt", nullable = true)
+    private Instant twoFactorTokenExpiresAt;
+    @Basic
     @Column(name = "Username", nullable = false, length = 45, unique = true)
     private String username;
     @Basic
@@ -43,7 +47,8 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<CommentEntity> comments;
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // orphanRemoval: dropping a permission from the list deletes its row
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PermissionEntity> permissions;
     @Enumerated(EnumType.STRING)
     @Column(name = "Role", nullable = true)
@@ -54,8 +59,8 @@ public class UserEntity implements UserDetails {
     @Basic
     @Column(name = "JWT", nullable = true)
     private String JWT;
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
+    // No cascade: rooms are shared, so removing a user must never remove a room
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_has_room",
             joinColumns = @JoinColumn(name = "IdUser", referencedColumnName = "IdUser"),
@@ -77,10 +82,14 @@ public class UserEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role.name()));
-        authorities.addAll(getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission().name()))
-                .toList());
+        if (role != null) {
+            authorities.add(new SimpleGrantedAuthority(role.name()));
+        }
+        if (permissions != null) {
+            authorities.addAll(permissions.stream()
+                    .map(permission -> new SimpleGrantedAuthority(permission.getPermission().name()))
+                    .toList());
+        }
         return authorities;
     }
 
@@ -99,9 +108,10 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
+    // Only approved accounts can sign in; Spring Security rejects the rest with DisabledException
     @Override
     public boolean isEnabled() {
-        return true;
+        return isApproved != null && isApproved == 1;
     }
 
 

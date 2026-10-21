@@ -1,141 +1,60 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import userService from "../../../Services/user.service";
-import loginService from "../../../Services/login.service";
-import { jwtDecode } from "jwt-decode";
+import { currentUser, logout as endSession } from "../../../Services/login.service";
 
-const logoutAction = (state, action) => {
-  loginService.logout();
-  return;
+const signedOut = {
+  authenticated: false,
+  user: null,
+  role: null,
+  permissions: [],
+  rooms: [],
 };
 
-const login = createAsyncThunk("auth/login", ({ username, password }) =>
-  loginService.loginUser(username, password)
-);
-export const logintoken = createAsyncThunk(
-  "auth/token",
-  ({ username, password, token }) =>
-    loginService.verifyToken(username, password, token)
-);
-export const logintokenOAuth = createAsyncThunk(
-  "auth/token/oauth",
-  ({ email, token, type }) => loginService.verifyTokenOAuth(email, token, type)
-);
-const getAll = createAsyncThunk("users/getUsers", () => userService.getUsers());
-
-const approveUser = createAsyncThunk("users/approve", ({ user }) =>
-  userService.approveUser(user)
-);
-
-const deleteUser = createAsyncThunk("users/delete", ({ id }) =>
-  userService.deleteUser(id)
-);
-
-const requests = createAsyncThunk("users/requests", () =>
-  userService.requests()
-);
-
-const getApprovedUser = createAsyncThunk("users/approved", ({ id }) =>
-  userService.getApprovedUser(id)
-);
-
-const updateUser = createAsyncThunk("users/update", ({ user }) =>
-  userService.updateUser(user)
-);
-
-const updateElements = (arr, obj) => {
-  return arr.map((el) => (el.id === obj.id ? { ...el, ...obj } : el));
-};
-
-const onSuccessAuth = (state, action) => {
-  const token = action.payload;
-  if (typeof token !== "string") {
-    return;
+// The session cookie is httpOnly, so the app asks the server who is signed in
+export const authState = createAsyncThunk("users/me", async () => {
+  try {
+    return (await currentUser()).data;
+  } catch {
+    return null;
   }
-  const user = jwtDecode(token);
-  state.authenticated = true;
-  state.authenticationFailed = false;
-  state.loading = false;
-  state.role = user.role;
-  state.user = user.sub;
-  state.permissions = user.permissions;
-};
+});
 
-export const authState = createAsyncThunk("users/jwt", () => {
-  const item = sessionStorage.getItem("auth");
-  if (item !== null || item !== undefined || item !== "") {
-    return item;
-  } else {
-    return "";
+// Tells the server to end the session (and drop the cookie); the local state is reset either way
+export const logout = createAsyncThunk("auth/logout", async () => {
+  try {
+    await endSession();
+  } catch {
+    // Already signed out on the server
   }
 });
 
 const userSlice = createSlice({
   name: "users",
   initialState: {
-    authenticated: false,
-    authenticationFailed: false,
-    loading: true,
-    user: null,
-    role: null,
-    permissions: [],
-    users: [],
+    ...signedOut,
+    // true once the stored session has been read, so routes are not decided too early
+    initialized: false,
   },
-  reducers: {
-    logout: logoutAction,
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getAll.fulfilled, (state, action) => {
-        state.users = action.payload;
+      // The payload is the signed-in user as the API returns it: { username, role, permissions, rooms }
+      .addCase(authState.fulfilled, (state, action) => {
+        const user = action.payload;
+        state.initialized = true;
+        if (!user?.username) {
+          Object.assign(state, signedOut);
+          return;
+        }
+        state.authenticated = true;
+        state.user = user.username;
+        state.role = user.role;
+        state.permissions = user.permissions ?? [];
+        state.rooms = user.rooms ?? [];
       })
-      .addCase(login.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.authenticationFailed = true;
-        state.loading = true;
-      })
-      .addCase(logintoken.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(logintoken.rejected, (state, action) => {
-        state.authenticationFailed = true;
-        state.loading = true;
-      })
-      .addCase(logintoken.fulfilled, onSuccessAuth)
-      .addCase(logintokenOAuth.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(logintokenOAuth.rejected, (state, action) => {
-        state.authenticationFailed = true;
-        state.loading = true;
-      })
-      .addCase(logintokenOAuth.fulfilled, onSuccessAuth)
-      .addCase(authState.pending, (state, action) => {
-        state.loading = true;
-      })
-      .addCase(authState.rejected, (state, action) => {
-        state.loading = false;
-      })
-      .addCase(authState.fulfilled, onSuccessAuth)
-
-      .addCase(approveUser.fulfilled, (state, action) => {
-        state.users = updateElements(state.users, action.payload);
-      })
-      .addCase(deleteUser.fulfilled, (state, action) => {
-        state.users = updateElements(state.users, action.payload);
-      })
-      .addCase(requests.fulfilled, (state, action) => {
-        state.users = action.payload;
-      })
-      .addCase(getApprovedUser.fulfilled, (state, action) => {
-        state.users = action.payload;
-      })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        state.user = { ...state.user, ...action.payload };
-        state.users = updateElements(state.users, action.payload);
+      .addCase(logout.fulfilled, (state) => {
+        Object.assign(state, signedOut);
       });
   },
 });
-export const { logout } = userSlice.actions;
+
 export default userSlice.reducer;

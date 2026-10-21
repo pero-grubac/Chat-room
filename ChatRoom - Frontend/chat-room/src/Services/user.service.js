@@ -1,17 +1,14 @@
 import base from "./baseService";
 
-const instance = base.service(true);
+const instance = base.service();
 
-export const getUsers = async () => {
-  const response = await instance.get("/users");
-  return response;
-};
-
+// Role, exact permission set and, for moderators, the rooms they manage (null keeps them)
 export const changeRole = async (user) => {
   const response = await instance.put("/users/changeRole", {
     id: user.id,
     role: user.role,
     permissions: user.permissions,
+    roomIds: user.roomIds,
   });
   return response;
 };
@@ -22,13 +19,14 @@ export const approveUser = async (user) => {
     isApproved: user.isApproved,
     role: user.role,
     permissions: user.permissions,
-    idRoom: user.idRoom,
+    roomIds: user.roomIds,
   });
   return response;
 };
 
-export const deleteUser = async (id) => {
-  const response = await instance.delete(`/users/delete/${id}`);
+// Blocks (allowed = false) or restores access for an approved account
+export const setAccess = async (id, allowed) => {
+  const response = await instance.put("/users/access", { id, allowed });
   return response;
 };
 
@@ -37,30 +35,8 @@ export const requests = async () => {
   return response;
 };
 
-export const getApprovedUser = async (id) => {
-  const response = await instance.get(`/users/approved/${id}`);
+// 1 = approved accounts, 0 = rejected registrations and blocked accounts
+export const getApprovedUser = async (isApproved) => {
+  const response = await instance.get(`/users/approved/${isApproved}`);
   return response;
-};
-
-export const updateUser = async (user) => {
-  const response = await instance.put("/users/update", {
-    id: user.id,
-    username: user.username,
-    password: user.password,
-    email: user.email,
-    role: user.role,
-    permissions: user.permissions,
-  });
-  return response;
-};
-
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  getUsers,
-  changeRole,
-  approveUser,
-  deleteUser,
-  requests,
-  getApprovedUser,
-  updateUser,
 };

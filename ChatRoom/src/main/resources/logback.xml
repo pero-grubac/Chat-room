@@ -8,10 +8,9 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <!-- each archived file, size max 5KB -->
+            <!-- each archived file, size max 5MB -->
             <maxFileSize>5MB</maxFileSize>
-            <!-- total size of all archive files, if total size > 20KB,
-                it will delete old archived file -->
+            <!-- total size of all archive files; older ones are deleted beyond it -->
             <totalSizeCap>50MB</totalSizeCap>
             <!-- 60 days to keep -->
             <maxHistory>60</maxHistory>
@@ -30,7 +29,25 @@
         </layout>
     </appender>
 
+    <!-- SIEM feed: one JSON object per line, for a log shipper (Filebeat, Fluent Bit, ...) -->
+    <appender name="SIEM-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/security.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/security.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>500MB</totalSizeCap>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
     <!-- Define loggers and their levels -->
+    <logger name="SIEM" level="info" additivity="false">
+        <appender-ref ref="SIEM-FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
     <logger name="org.unibl.etfbl.ChatRoom" level="trace" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
         <appender-ref ref="CONSOLE"/>

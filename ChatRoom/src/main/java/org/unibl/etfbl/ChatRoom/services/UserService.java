@@ -15,8 +15,6 @@ public interface UserService {
 
     List<UserOutput> getAllUsersByIsApproved(Byte isApproved);
 
-    UserOutput getUser(Integer id) throws NotFoundException;
-
     UserOutput createUser(UserInput user);
 
     UserOutput updateUser(String username, UserInput user);
@@ -25,13 +23,12 @@ public interface UserService {
 
     void approveUser(ApproveUser approveUser) throws NotFoundException, ConflictException;
 
+    /** Blocks or restores access for an account that was approved before. */
+    void setAccess(Integer id, boolean allowed, String actingUsername);
+
     void changeRole(ChangeRole changeRole) throws NotFoundException, ConflictException;
 
-    UserOutput findByEmail(String email) throws NotFoundException;
-
     UserEntity findByUsername(String username) throws NotFoundException;
-
-    void save(UserEntity userEntity);
 
     void deleteJWT(String username);
 

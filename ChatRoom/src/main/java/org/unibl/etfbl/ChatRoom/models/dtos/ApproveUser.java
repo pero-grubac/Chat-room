@@ -7,13 +7,15 @@ import org.unibl.etfbl.ChatRoom.enums.RoleEnum;
 
 import java.util.List;
 
+/** The admin's decision on a registration: approve with a role, permissions and (for moderators) rooms, or reject. */
 @Data
 public class ApproveUser {
     private int id;
     private boolean isApproved;
     private RoleEnum role;
     private List<PermissionEnum> permissions;
-    private Integer idRoom;
+    /** Rooms a moderator manages; required for moderators, ignored for the other roles. */
+    private List<Integer> roomIds;
 
     @JsonProperty("isApproved")
     public boolean isApproved() {
@@ -24,5 +26,4 @@ public class ApproveUser {
     public void setApproved(boolean approved) {
         isApproved = approved;
     }
-
 }
